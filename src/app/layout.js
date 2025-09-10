@@ -1,5 +1,6 @@
-import { Geist, Geist_Mono ,Poppins} from "next/font/google";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/footer";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${poppinsFont.variable} antialiased`}
       >
         {children}
+        <Footer />
       </body>
     </html>
   );
