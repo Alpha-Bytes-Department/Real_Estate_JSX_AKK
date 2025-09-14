@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function SignUp() {
     return (
         <div className="w-full h-screen flex">
-            <div className="w-full lg:w-1/2 h-screen flex items-center justify-center">
+            <div className="w-full lg:w-1/2 h-screen flex flex-col items-center justify-center">
                 <form action="">
                     <h1 className="text-[#000000] font-poppins font-medium text-3xl">
                         Get Started Now</h1>
