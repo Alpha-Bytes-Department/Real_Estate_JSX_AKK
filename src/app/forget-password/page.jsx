@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ForgetPassword() {
     return (
-        <div className="w-full h-screen flex flex-col items-center justify-center text-center gap-8">
+        <div className="w-full h-screen flex flex-col items-center justify-center gap-8 text-center">
             <h1 className="font-semibold font-poppins text-[#000000] text-4xl">Forget Your
                 Password?</h1>
             <p className="text-[#8F8C8C] text-xl font-poppins">No worries! Enter your email below and
