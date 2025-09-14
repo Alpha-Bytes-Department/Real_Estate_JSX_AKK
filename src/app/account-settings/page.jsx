@@ -61,7 +61,7 @@ export default function AccountSettings() {
                         <div className="flex gap-12">
                             <div className="flex flex-col gap-4">
                                 <p className="font-poppins text-[#000000] pt-8">Name</p>
-                                <input type="text" placeholder="Enter your name" className="w-[400px] 
+                                <input type="text" placeholder="Enter your name" className="lg:w-[400px] 
                             h-[36px] font-poppins pl-4 outline-none ring ring-[#D9D9D9] rounded-md"/>
                             </div>
 
@@ -76,7 +76,6 @@ export default function AccountSettings() {
                         rounded-md font-poppins">Update Profile</button>
                     </form>
                 </div>
-
 
                 <div className="w-full h-2/3 bg-[#FFFFFF] p-7 pt-20">
                     <form action="">
