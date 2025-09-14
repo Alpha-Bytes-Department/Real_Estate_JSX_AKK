@@ -17,12 +17,12 @@ export default function Listings() {
                 text-3xl z-50">Data Source Management</h1>
             </div> */}
             <div className="w-full h-[400px] bg-[url(/background_photo_of_listings.jpg)]
-            bg-cover relative flex items-center justify-center">
+            bg-cover relative flex items-center justify-center mt-4">
                 <h1 className="absolute font-poppins text-[blue] font-bold 
                 text-3xl text-center z-50">Data Source Management</h1>
             </div>
 
-            <div className="w-full grid grid-cols-3 gap-4">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-8 pl-14 pr-14 pt-8">
                 <ListingCard imageName={"zillow"} title={"Zillow"} />
                 <ListingCard imageName={"crexi"} title={"Crexi"} />
                 <ListingCard imageName={"redfin"} title={"Redfin"} />
@@ -31,7 +31,7 @@ export default function Listings() {
                 <ListingCard imageName={"zillow-2"} title={"Zillow"} />
             </div>
 
-            <div className="flex gap-6 lg:pl-280">
+            <div className="flex gap-6 lg:pl-400 pt-8">
                 <button className="text-[#000000] font-poppins bg-[#FFFFFF] ring-2 
                 ring-[#000000] px-4 py-1 mt-4 rounded-sm hover:bg-[#3F3C3C]
                 hover:text-[#FFFFFF] cursor-pointer">Back</button>
