@@ -66,8 +66,8 @@ export default function SignUp() {
                     </div>
 
                     <div className="flex items-center justify-center gap-2 pt-6">
-                        <p className="text-[#000000] font-poppins">Have an account?</p>
-                        <a href="" className="text-blue-700 font-poppins">Sign In</a>
+                        <p className="text-[#000000] font-poppins">Already have an account?</p>
+                        <a href="/sign-in" className="text-blue-700 font-poppins">Sign In</a>
                     </div>
                 </form>
             </div>

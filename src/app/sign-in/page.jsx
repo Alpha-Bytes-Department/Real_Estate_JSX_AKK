@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function SignIn() {
     return (
@@ -18,11 +19,13 @@ export default function SignIn() {
                         font-poppins outline-none w-[400px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
                         rounded-md`} />
 
-                    <a href="" className="text-blue-700 text-sm font-poppins mt-4 pr-0">
+                    <a href="/forget-password" className="text-blue-700 text-sm font-poppins mt-4 pr-0">
                         forgot password?</a>
 
-                    <button className="text-[#FFFFFF] font-poppins bg-[#000000] w-[400px] h-[40px] 
+                    <Link href="/dashboard">
+                        <button className="text-[#FFFFFF] font-poppins bg-[#000000] w-[400px] h-[40px] 
                             rounded-md mt-4">Log In</button>
+                    </Link>
 
                     <div className="flex gap-2 pt-8">
                         <div className="w-[180px] h-[1px] bg-gray-300" />
@@ -54,7 +57,7 @@ export default function SignIn() {
 
                     <div className="flex items-center justify-center gap-2 pt-6">
                         <p className="text-[#000000] font-poppins">Don’t have an account?</p>
-                        <a href="" className="text-blue-700 font-poppins">Sign Up</a>
+                        <a href="/sign-up" className="text-blue-700 font-poppins">Sign Up</a>
                     </div>
                 </form>
             </div>

@@ -77,8 +77,10 @@ export default function SavedProperties() {
 
                     <div className="flex flex-col">
                         <h1 className="font-poppins font-semibold">$1,250/unit</h1>
-                        <button className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
+                        <Link href="/property-details">
+                            <button className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
                         cursor-pointer font-poppins">View Details</button>
+                        </Link>
                     </div>
                 </div>
             </div>

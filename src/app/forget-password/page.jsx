@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ForgetPassword() {
     return (
         <div className="w-full h-screen flex flex-col items-center justify-center gap-6">
@@ -9,8 +11,11 @@ export default function ForgetPassword() {
             <input placeholder="Enter your registered email address" className="w-[350px] h-[45px] 
             ring-2 ring-[#D9D9D9] pl-4 rounded-md text-[#877E7E] outline-none font-poppins 
             font-medium"/>
-            <button className="w-[350px] h-[45px] bg-[#000000] rounded-md text-[#FFFFFF]
+            
+            <Link href="/check-your-inbox-page">
+                <button className="w-[350px] h-[45px] bg-[#000000] rounded-md text-[#FFFFFF]
             font-poppins">Send Reset Link</button>
+            </Link>
 
             <div className="flex flex-col items-center justify-center">
                 <p className="text-[#8F8C8C] font-poppins">A password reset link will be sent to your

@@ -90,13 +90,17 @@ export default function Dashboard() {
             </div>
 
             <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
-                <button className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-6 py-2 
+                <Link href="/saved-properties">
+                    <button className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-6 py-2 
                 cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]">Saved Properties</button>
+                </Link>
                 <button className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-6 py-2
                 cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
                     onClick={zoningPopUpShow}>Zoning Map</button>
-                <button className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-6 py-2
+                <Link href="/listings">
+                    <button className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-6 py-2
                 cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]">Listings</button>
+                </Link>
             </div>
 
             {zoningMapClicked && (
@@ -189,32 +193,38 @@ export default function Dashboard() {
                 account && (
                     <div className="absolute top-25 right-20 w-[250px] h-[350px] flex flex-col gap-4
                     bg-[#FFFFFF]">
-                        <button>
-                            <div className="w-full h-[40px] flex items-center justify-between bg-[#D9D9D9] 
-                        mt-3 rounded-sm cursor-pointer">
-                                <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
-                                <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
-                                    className="" />
-                            </div>
-                        </button>
+                        <Link href="/account-settings">
+                            <button>
+                                <div className="w-full h-[40px] flex items-center justify-between 
+                                bg-[#D9D9D9] mt-3 rounded-sm cursor-pointer">
+                                    <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
+                                    <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
+                                        className="" />
+                                </div>
+                            </button>
+                        </Link>
 
-                        <button>
-                            <div className="w-full h-[40px] flex items-center justify-between 
+                        <Link href="/saved-properties">
+                            <button>
+                                <div className="w-full h-[40px] flex items-center justify-between 
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
-                                <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
-                                <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
-                                    className="" />
-                            </div>
-                        </button>
+                                    <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
+                                    <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
+                                        className="" />
+                                </div>
+                            </button>
+                        </Link>
 
-                        <button>
-                            <div className="w-full h-[40px] flex items-center justify-between 
+                        <Link href="/listings">
+                            <button>
+                                <div className="w-full h-[40px] flex items-center justify-between 
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
-                                <p className="text-[#000000] font-poppins pl-3">Listings</p>
-                                <Image src="list.svg" alt="list-logo" width={20} height={20}
-                                    className="" />
-                            </div>
-                        </button>
+                                    <p className="text-[#000000] font-poppins pl-3">Listings</p>
+                                    <Image src="list.svg" alt="list-logo" width={20} height={20}
+                                        className="" />
+                                </div>
+                            </button>
+                        </Link>
 
                         <div className="w-full h-[40px] flex items-center gap-2 pl-4">
                             <div className="w-[80px] h-[1px] bg-[#8F8C8C]" />
