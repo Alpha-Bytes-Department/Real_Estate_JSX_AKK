@@ -12,7 +12,7 @@ export default function FirstPage() {
       <p className="text-black text-center font-poppins">Turning Complex Zoning
         Into Clear Investment Opportunities.</p>
 
-      <div className="flex flex-col lg:flex-row gap-16">
+      <div className="flex flex-col lg:flex-row gap-16 mt-6">
         <Link href="/sign-up">
           <button className="text-[#FFFFFF] bg-[#000000] w-[300px] h-[60px] rounded-md
           font-poppins">Sign Up</button>
@@ -24,7 +24,7 @@ export default function FirstPage() {
         </Link>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 pt-4">
+      <div className="flex flex-col lg:flex-row gap-8 mt-6">
         <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px] 
                     rounded-md font-poppins">
           <div className="flex gap-3">

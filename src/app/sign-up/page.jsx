@@ -10,22 +10,22 @@ export default function SignUp() {
 
                     <p className={`text-[#000000] pt-4 font-poppins`}>Name</p>
                     <input type="text" placeholder="Enter your name" className={`text-[black] 
-                    font-poppins outline-none w-[400px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
+                    font-poppins outline-none min-w-[300px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
                     rounded-md`} />
 
                     <p className={`text-[#000000] pt-4 font-poppins`}>Email address</p>
                     <input type="text" placeholder="Enter your email" className={`text-[black] 
-                    font-poppins outline-none w-[400px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
+                    font-poppins outline-none min-w-[300px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
                     rounded-md`} />
 
                     <p className={`text-[#000000] pt-4 font-poppins`}>Password</p>
                     <input type="password" placeholder="Enter your password" className={`text-[black] 
-                    font-poppins outline-none w-[400px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
+                    font-poppins outline-none min-w-[300px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
                     rounded-md`} />
 
                     <p className={`text-[#000000] pt-4 font-poppins`}>Confirm Password</p>
                     <input type="text" placeholder="Confirm password" className={`text-[black] 
-                    font-poppins outline-none w-[400px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
+                    font-poppins outline-none min-w-[300px] h-[35px] pl-6 mt-3 ring-2 ring-[#D9D9D9] 
                     rounded-md`} />
 
                     <div className="flex gap-3 pt-4">
@@ -34,16 +34,16 @@ export default function SignUp() {
                             <a href="" className="text-blue-700">terms & policy</a></p>
                     </div>
 
-                    <button className="text-[#FFFFFF] font-poppins bg-[#000000] w-[400px] h-[40px] 
+                    <button className="text-[#FFFFFF] font-poppins bg-[#000000] min-w-[300px] h-[40px] 
                         rounded-md mt-4">Sign Up</button>
 
                     <div className="flex gap-2 pt-8">
-                        <div className="w-[180px] h-[1px] bg-gray-300" />
+                        <div className="min-w-[130px] h-[1px] bg-gray-300" />
                         <p className="text-[#000000] font-poppins -translate-y-1/2">Or</p>
-                        <div className="w-[180px] h-[1px] bg-gray-300" />
+                        <div className="w-[130px] h-[1px] bg-gray-300" />
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-8 pt-6">
+                    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 pt-6">
                         <button className={`text-[#000000] ring-2 ring-[#D9D9D9] w-[180px] h-[40px] 
                                         rounded-md font-poppins`}>
                             <div className="flex gap-3">
