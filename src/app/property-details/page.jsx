@@ -314,9 +314,30 @@ export default function ViewAllImage() {
 
             <h1 className="text-[#000000] text-2xl font-semibold font-poppins mt-8">Comparable
                 Properties</h1>
+
             <div className="w-full flex gap-8">
-                <div className="w-1/3 h-[150px] relative">
-                    <Image src="/comparable-properties-1.jpg" alt="comparable-properties-1" fill />
+                <div className="w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
+                    <div className="w-1/3 h-full relative">
+                        <Image src="/comparable-properties-1.jpg" alt="comparable-properties-1" fill />
+                    </div>
+                    <div className="w-2/3 flex flex-col pt-8">
+                        <h1 className="font-semibold font-poppins text-2xl text-[#000000]">456 Oak
+                            Ave</h1>
+                        <p className="font-poppins text-[#000000]">$375,000.3bd/2ba</p>
+                        <p className="font-poppins text-[#000000]">Sold 2 Weeks ago</p>
+                    </div>
+                </div>
+
+                <div className="w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
+                    <div className="w-1/3 h-full relative">
+                        <Image src="/comparable-properties-2.jpg" alt="comparable-properties-1" fill />
+                    </div>
+                    <div className="w-2/3 flex flex-col pt-8">
+                        <h1 className="font-semibold font-poppins text-2xl text-[#000000]">456 Oak
+                            Ave</h1>
+                        <p className="font-poppins text-[#000000]">$375,000.3bd/2ba</p>
+                        <p className="font-poppins text-[#000000]">Sold 2 Weeks ago</p>
+                    </div>
                 </div>
             </div>
         </div>
