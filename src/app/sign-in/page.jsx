@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function SignUp() {
     return (
@@ -23,8 +24,10 @@ export default function SignUp() {
                             forgot password?</a>
                     </div>
 
-                    <button className="text-[#FFFFFF] font-poppins bg-[#000000] min-w-[300px] h-[40px] 
-                        rounded-md mt-4">Log In</button>
+                    <Link href="/dashboard">
+                        <button className="text-[#FFFFFF] font-poppins bg-[#000000] min-w-[300px] 
+                        h-[40px] rounded-md mt-4">Log In</button>
+                    </Link>
 
                     <div className="flex gap-2 pt-8">
                         <div className="min-w-[130px] h-[1px] bg-gray-300" />
