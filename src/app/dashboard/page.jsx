@@ -1,13 +1,15 @@
 "use client"
-import { APIProvider } from "@vis.gl/react-google-maps";
-import { Map, Marker } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider"
+import Link from "next/link";
+
 
 export default function Dashboard() {
     const [zoningMapClicked, setZoningMapClicked] = useState(false);
     const [account, setAccount] = useState(false);
+    const [smallPopUp, setSmallPopUp] = useState(false);
 
     function zoningPopUpShow() {
         setZoningMapClicked(true);
@@ -21,6 +23,7 @@ export default function Dashboard() {
         lat: 40.4406,
         lng: -79.9959,
     });
+
     return (
         <div className="w-full h-screen relative">
             <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
@@ -31,7 +34,32 @@ export default function Dashboard() {
                     gestureHandling={"greedy"}
                     disableDefaultUI
                 >
-                    <Marker position={markerLocation} />
+                    <Marker position={markerLocation} onClick={() => setSmallPopUp(true)} />
+                    {smallPopUp && (
+                        <InfoWindow
+                            position={markerLocation}
+                            onCloseClick={() => setSmallPopUp(false)}
+                        >
+                            <div className="w-[250px] h-[250px]">
+                                <div className="w-full h-[60%] relative">
+                                    <Image src="/saved-properties-1.jpg" alt="pop-up-house" fill />
+                                </div>
+                                <div className="w-full h-[40%] ">
+                                    <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
+                                        $199,999</h1>
+                                    <p className="font-poppins text-[#000000]">3 beds | 2 bathrooms |
+                                        2611 sqft - House for sale</p>
+                                    <p className="font-poppins text-[#000000]">6515 Belair Road
+                                        (MDFS35424512)</p>
+                                </div>
+                                <Link href="/property-details">
+                                    <button className="mt-2 px-3 py-1 bg-blue-600 text-white rounded">
+                                        View Details
+                                    </button>
+                                </Link>
+                            </div>
+                        </InfoWindow>
+                    )}
                 </Map>
             </APIProvider>
 
