@@ -105,8 +105,8 @@ export default function Dashboard() {
 
             {zoningMapClicked && (
                 <div>
-                    <div className="absolute top-60 lg:top-70 lg:w-[700px] h-[50px] lg:ml-150 z-20 bg-[#FFFFFF] 
-                    rounded-full grid grid-cols-1 lg:grid-cols-4 lg:gap-8">
+                    <div className="absolute top-70 w-full lg:w-[700px] h-[50px] overflow-x-scroll 
+                    overflow-y-scroll lg:ml-150 z-20 bg-[#FFFFFF] flex justify-around gap-6 lg:gap-8">
                         <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
                             <input type="checkbox" />
                             Sold Listings
@@ -125,8 +125,8 @@ export default function Dashboard() {
                         </label>
                     </div>
 
-                    <div className="absolute bottom-30 lg:bottom-20 w-[300px] lg:w-[900px] h-[400px] 
-                    lg:h-[500px] overflow-scroll lg:ml-130 z-30 bg-[#FFFFFF]">
+                    <div className="absolute bottom-30 lg:bottom-20 w-full lg:w-[900px] h-[400px] 
+                    lg:h-[500px] overflow-x-scroll overflow-y-scroll lg:ml-130 z-30 bg-[#FFFFFF]">
                         <div className="flex justify-around gap-6 pt-5">
                             <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
                                 <input type="checkbox" />
@@ -150,7 +150,7 @@ export default function Dashboard() {
                             </label>
                         </div>
 
-                        <div className="pt-5 flex gap-6 pl-6">
+                        <div className="pt-5 flex gap-6 lg:pl-6">
                             <h1 className="text-[#000000] font-poppins font-medium">Property Type:</h1>
                             <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
                                 <input type="radio" />
@@ -166,8 +166,8 @@ export default function Dashboard() {
                             </label>
                         </div>
 
-                        <div className="lg:w-[800px] h-[330px] flex flex-col items-center justify-center gap-5 
-                mt-4 lg:ml-12 bg-[#F5F5F5]">
+                        <div className="lg:w-[800px] h-[330px] flex flex-col items-center justify-center 
+                        gap-5 mt-4 lg:ml-12 bg-[#F5F5F5]">
                             <p className="font-poppins text-[#000000]">Zoned Units</p>
                             <Slider defaultValue={[13, 70]} max={100} step={1} />
                             <p className="font-poppins text-[#000000]">List Price</p>
