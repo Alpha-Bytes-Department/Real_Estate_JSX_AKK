@@ -244,3 +244,95 @@ export default function Dashboard() {
         </div>
     );
 };
+
+
+{/* <div className="absolute top-70 w-full lg:w-[700px] h-[50px] sm:overflow-x-scroll 
+                    md:overflow-x-scroll lg:overflow-x-visible sm:overflow-y-scroll md:overflow-y-scroll 
+                    lg:overflow-y-visible lg:ml-150 z-20 bg-[#FFFFFF] flex justify-around gap-6 
+                    lg:gap-8">
+    <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+        <input type="checkbox" />
+        Sold Listings
+    </label>
+    <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+        <input type="checkbox" />
+        Reviewed
+    </label>
+    <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+        <input type="checkbox" />
+        Exclusion Zones
+    </label>
+    <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+        <input type="checkbox" />
+        Show Alert Map
+    </label>
+</div> */}
+
+
+
+
+{/* <div className="absolute bottom-30 lg:bottom-20 w-full lg:w-[900px] h-[400px] 
+                    lg:h-[500px] sm:overflow-x-scroll md:overflow-x-scroll lg:overflow-x-visible 
+                    sm:overflow-y-scroll md:overflow-y-scroll lg:overflow-y-visible lg:ml-130 z-30 
+                    bg-[#FFFFFF]">
+    <div className="flex justify-around gap-6 pt-5">
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="checkbox" />
+            Missing Data
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="checkbox" />
+            Favorites
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="checkbox" />
+            Business Rule Matches
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="checkbox" />
+            Newly Listed
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="checkbox" />
+            Normal Listings
+        </label>
+    </div>
+
+    <div className="pt-5 flex gap-6 lg:pl-6">
+        <h1 className="text-[#000000] font-poppins font-medium">Property Type:</h1>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="radio" />
+            All
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="radio" />
+            Multi-Family
+        </label>
+        <label className="flex items-center gap-2 text-[#000000] font-poppins text-sm">
+            <input type="radio" />
+            Land
+        </label>
+    </div>
+
+    <div className="lg:w-[800px] h-[330px] flex flex-col items-center justify-center 
+                        gap-5 mt-4 lg:ml-12 bg-[#F5F5F5]">
+        <p className="font-poppins text-[#000000]">Zoned Units</p>
+        <Slider defaultValue={[13, 70]} max={100} step={1} />
+        <p className="font-poppins text-[#000000]">List Price</p>
+        <Slider defaultValue={[33, 90]} max={100} step={1} />
+        <p className="font-poppins text-[#000000]">Existing Potential $ Per Unit</p>
+        <Slider defaultValue={[47, 92]} max={100} step={1} />
+        <p className="font-poppins text-[#000000]">Days on Market</p>
+        <Slider defaultValue={[27, 54]} max={100} step={1} />
+    </div>
+
+    <div className="flex justify-end gap-6 pt-4 pr-8">
+        <button className="ring-2 ring-[#000000] bg-[#FFFFFF] px-4 py-1 rounded-xs
+                    font-poppins cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
+            onClick={() => setZoningMapClicked(false)}>Clear</button>
+        <button className="ring-2 ring-[#000000] bg-[#FFFFFF] px-4 py-1 rounded-xs
+                    font-poppins cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
+            onClick={() => setZoningMapClicked(false)}>Apply</button>
+    </div>
+</div> */}
+
