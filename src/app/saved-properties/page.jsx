@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Star } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
 import Link from "next/link";
 
@@ -31,16 +31,16 @@ export default function SavedProperties() {
                 <nav>
                     <ul className="flex gap-8 font-poppins text-[#8F8C8C]">
                         <li>
-                            <Link href="/all-properties">All</Link>
+                            <Link href="">All</Link>
                         </li>
                         <li>
-                            <Link href="/residential">Residential</Link>
+                            <Link href="">Residential</Link>
                         </li>
                         <li>
-                            <Link href="/commercial">Commercial</Link>
+                            <Link href="">Commercial</Link>
                         </li>
                         <li>
-                            <Link href="/fovourites">Favourites</Link>
+                            <Link href="">Favourites</Link>
                         </li>
                     </ul>
                 </nav>
@@ -49,12 +49,12 @@ export default function SavedProperties() {
 
             <div className="w-full lg:w-1/3 h-[400px] pt-8 rounded-lg">
                 <div className="w-full h-[70%] relative">
-                    <Image src="/saved-properties-1.jpg" alt="saved-properties-1" fill />
+                    <Image src="/home_pic_1.jpg" alt="home_pic_1" fill />
                     <div className="flex gap-4">
                         <button>
                             <div className="w-[35px] h-[35px] absolute top-2 right-2 rounded-full 
                             bg-[white] flex items-center justify-center">
-                                <Trash2 />
+                                <Star />
                             </div>
                         </button>
 

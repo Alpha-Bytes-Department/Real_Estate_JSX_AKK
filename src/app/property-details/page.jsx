@@ -13,7 +13,7 @@ export default function ViewAllImage() {
     }
     return (
         <div className="min-h-screen p-8">
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center justify-center gap-12">
                 <div className="flex">
                     <ChevronLeft />
                     <Link href="/dashboard" className="font-poppins">Back to search</Link>
@@ -92,7 +92,7 @@ export default function ViewAllImage() {
                 Source: CARMLS,MLS#: 25017212
             </div>
 
-            <div className="w-full h-[470px] border-2 border-[#8F8C8C] mt-6 rounded-md font-poppins">
+            <div className="w-full lg:h-[470px] border-2 border-[#8F8C8C] mt-6 rounded-md font-poppins">
                 <div className="p-6">
                     <h1 className="text-[#000000] font-medium text-2xl">Per-Unit Price Calculation</h1>
                     <div className="w-full h-[1px] bg-[#8F8C8C] mt-2" />
@@ -103,8 +103,8 @@ export default function ViewAllImage() {
                             classification. </p>
                     </div>
 
-                    <div className="w-full bg-[#F9FAFB] border-2 rounded-md mt-6">
-                        <div className="grid grid-cols-5 gap-6">
+                    <div className="w-full h-full bg-[#F9FAFB] border-2 rounded-md mt-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                             <div className="flex flex-col items-center justify-center text-[#000000]">
                                 <h1 className="font-poppins font-semibold text-3xl">$350,000</h1>
                                 <p className="font-poppins">List Price</p>
@@ -129,7 +129,7 @@ export default function ViewAllImage() {
                     <div className="w-full mt-6 p-6 outline-dashed rounded-md bg-[#F9FAFB] text-[#000000] 
                     font-poppins">
                         <h1 className="font-semibold">Explore Scenarios</h1>
-                        <div className="flex gap-12 mt-4">
+                        <div className="flex flex-col lg:flex-row gap-12 mt-4">
                             <div className="flex flex-col gap-2">
                                 <p>Custom Price (Optional)</p>
                                 <input className="border border-[#877E7E] outline-none pl-2 rounded-sm"
@@ -295,13 +295,13 @@ export default function ViewAllImage() {
                 Analysis</h1>
             <div className="w-full h-[1px] bg-[#000000] mt-2" />
 
-            <div className="flex gap-6 mt-6">
-                <div className="w-1/2 h-[100px] bg-[#F9FAFB] font-poppins flex flex-col items-center
+            <div className="flex flex-col lg:flex-row gap-6 mt-6">
+                <div className="lg:w-1/2 h-[100px] bg-[#F9FAFB] font-poppins flex flex-col items-center
             justify-center">
                     <p className="text-[#000000]">Estimated Property Taxes</p>
                     <p className="text-[#137FEC] text-2xl font-semibold">$4,200/year</p>
                 </div>
-                <div className="w-1/2 h-[100px] bg-[#F9FAFB] font-poppins flex flex-col items-center
+                <div className="lg:w-1/2 h-[100px] bg-[#F9FAFB] font-poppins flex flex-col items-center
             justify-center">
                     <p className="text-[#000000]">Potential Rental Income</p>
                     <p className="text-[#137FEC] text-2xl font-semibold">$2,500/year</p>
@@ -317,8 +317,8 @@ export default function ViewAllImage() {
             <h1 className="text-[#000000] text-2xl font-semibold font-poppins mt-8">Comparable
                 Properties</h1>
 
-            <div className="w-full flex gap-8">
-                <div className="w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
+            <div className="w-full flex flex-col lg:flex-row gap-8">
+                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
                     <div className="w-1/3 h-full relative">
                         <Image src="/comparable-properties-1.jpg" alt="comparable-properties-1" fill />
                     </div>
@@ -330,7 +330,7 @@ export default function ViewAllImage() {
                     </div>
                 </div>
 
-                <div className="w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
+                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
                     <div className="w-1/3 h-full relative">
                         <Image src="/comparable-properties-2.jpg" alt="comparable-properties-1" fill />
                     </div>

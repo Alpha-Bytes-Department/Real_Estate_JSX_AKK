@@ -18,7 +18,7 @@ export default function Listings() {
             </div> */}
             <div className="w-full h-[400px] bg-[url(/background_photo_of_listings.jpg)]
             bg-cover relative flex items-center justify-center mt-4">
-                <h1 className="absolute font-poppins text-[blue] font-bold 
+                <h1 className="absolute font-poppins text-[yellow] lg:text-[blue] font-bold 
                 text-3xl text-center z-50">Data Source Management</h1>
             </div>
 
