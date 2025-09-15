@@ -64,7 +64,7 @@ export default function Dashboard() {
             </APIProvider>
 
             <div className="absolute top-4 w-full flex justify-between">
-                <div className="flex max-w-[370px] h-[40px] ml-8 mt-2 ring-2 ring-[#000000] 
+                <div className="flex lg:max-w-[370px] h-[40px] lg:ml-8 mt-2 ring-2 ring-[#000000] 
             bg-[#000000] rounded-md">
                     <Image src="/search.svg" alt="search-icon" width={20} height={20}
                         className="invert ml-2" />
@@ -195,35 +195,29 @@ export default function Dashboard() {
                     <div className="absolute top-25 right-20 w-[250px] h-[350px] flex flex-col gap-4
                     bg-[#FFFFFF]">
                         <Link href="/account-settings">
-                            <button>
-                                <div className="w-full h-[40px] flex items-center justify-between 
+                            <button className="w-full h-[40px] flex items-center justify-between 
                                 bg-[#D9D9D9] mt-3 rounded-sm cursor-pointer">
-                                    <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
-                                    <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
-                                        className="" />
-                                </div>
+                                <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
+                                <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
+                                    className="" />
                             </button>
                         </Link>
 
                         <Link href="/saved-properties">
-                            <button>
-                                <div className="w-full h-[40px] flex items-center justify-between 
+                            <button className="w-full h-[40px] flex items-center justify-between 
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
-                                    <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
-                                    <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
-                                        className="" />
-                                </div>
+                                <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
+                                <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
+                                    className="" />
                             </button>
                         </Link>
 
                         <Link href="/listings">
-                            <button>
-                                <div className="w-full h-[40px] flex items-center justify-between 
+                            <button className="w-full h-[40px] flex items-center justify-between 
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
-                                    <p className="text-[#000000] font-poppins pl-3">Listings</p>
-                                    <Image src="list.svg" alt="list-logo" width={20} height={20}
-                                        className="" />
-                                </div>
+                                <p className="text-[#000000] font-poppins pl-3">Listings</p>
+                                <Image src="list.svg" alt="list-logo" width={20} height={20}
+                                    className="" />
                             </button>
                         </Link>
 
