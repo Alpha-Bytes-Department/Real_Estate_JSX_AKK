@@ -199,7 +199,7 @@ export default function Dashboard() {
                                 bg-[#D9D9D9] mt-3 rounded-sm cursor-pointer">
                                 <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
                                 <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
-                                    className="" />
+                                    className="mr-3" />
                             </button>
                         </Link>
 
@@ -208,7 +208,7 @@ export default function Dashboard() {
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
                                 <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
                                 <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
-                                    className="" />
+                                    className="mr-3" />
                             </button>
                         </Link>
 
@@ -217,7 +217,7 @@ export default function Dashboard() {
                             bg-[#D9D9D9] rounded-sm cursor-pointer">
                                 <p className="text-[#000000] font-poppins pl-3">Listings</p>
                                 <Image src="list.svg" alt="list-logo" width={20} height={20}
-                                    className="" />
+                                    className="mr-3" />
                             </button>
                         </Link>
 
