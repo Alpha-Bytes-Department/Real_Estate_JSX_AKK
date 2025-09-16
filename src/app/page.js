@@ -27,17 +27,17 @@ export default function FirstPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 mt-6">
-        <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px] rounded-md 
-        font-poppins flex items-center justify-center gap-3 cursor-pointer transition duration-300 
-        ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
+        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2 
+        ring-[#D9D9D9] w-[220px] h-[40px] rounded-md font-poppins cursor-pointer transition 
+        duration-300 ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
           <Image src="/Google_Icon.svg" alt="google_icon" height={20} width={20}
             className="ml-4" />
           <p className="text-[#000000] font-poppins text-sm">Sign in with Google</p>
         </button>
 
-        <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px] rounded-md 
-        font-poppins flex items-center justify-center gap-3 cursor-pointer transition duration-300 
-        ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
+        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2 
+        ring-[#D9D9D9] w-[220px] h-[40px] rounded-md font-poppins cursor-pointer transition 
+        duration-300 ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
           <Image src="/Apple_Icon.svg" alt="apple_icon" height={20} width={20}
             className="ml-4" />
           <p className="text-[#000000] font-poppins text-sm">Sign in with Apple</p>

@@ -48,18 +48,18 @@ export default function SignUp() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row items-center justify-center gap-8 pt-6">
-                        <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[180px] h-[40px] 
-                        rounded-md font-poppins cursor-pointer transition duration-300 ease-in-out
-                        hover:scale-105 hover:shadow-lg flex items-center justify-center gap-3">
+                        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2
+                        ring-[#D9D9D9] w-[180px] h-[40px] rounded-md font-poppins cursor-pointer 
+                        transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
                             <Image src="/Google_Icon.svg" alt="google_icon" height={10} width={15}
                                 className="ml-4" />
                             <p className={`text-[#000000] text-xs font-poppins`}>Sign in with
                                 Google</p>
                         </button>
 
-                        <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[180px] h-[40px] 
-                        rounded-md font-poppins cursor-pointer transition duration-300 ease-in-out
-                        hover:scale-105 hover:shadow-lg flex items-center justify-center gap-3">
+                        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2 
+                        ring-[#D9D9D9] w-[180px] h-[40px] rounded-md font-poppins cursor-pointer 
+                        transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
                             <Image src="/Apple_Icon.svg" alt="apple_icon" height={10} width={15}
                                 className="ml-4" />
                             <p className={`text-[#000000] text-xs font-poppins`}>Sign in with
