@@ -17,7 +17,7 @@ export default function SignIn() {
                     <h1 className="text-[#000000] font-poppins font-medium text-2xl">
                         Welcome back!</h1>
 
-                    <div className="grid w-full max-w-sm items-center gap-3 mt-4">
+                    <div className="grid w-full max-w-sm items-center gap-3 mt-6">
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Email address</Label>
                         <Input type="email" id="email" placeholder="Enter your email" />
                     </div>
