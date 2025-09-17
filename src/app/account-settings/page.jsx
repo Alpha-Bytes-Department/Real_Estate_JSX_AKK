@@ -1,6 +1,15 @@
+"use client"
 import Image from "next/image";
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function AccountSettings() {
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+    const [showPassword3, setShowPassword3] = useState(false);
     return (
         <div className="w-full h-screen flex gap-12 bg-[#F9FAFB]">
             <div className="w-1/4 h-screen hidden lg:flex flex-col justify-between">
@@ -59,21 +68,23 @@ export default function AccountSettings() {
                         <div className="w-full h-[1.5px] bg-[#000000] mt-3" />
 
                         <div className="flex flex-col lg:flex-row gap-1 lg:gap-12">
-                            <div className="flex flex-col gap-2">
-                                <p className="font-poppins text-[#000000] pt-8">Name</p>
-                                <input type="text" placeholder="Enter your name" className="min-w-[300px] 
-                            h-[36px] font-poppins pl-4 outline-none ring ring-[#D9D9D9] rounded-md"/>
+                            <div className="grid w-full max-w-sm items-center gap-3 mt-6">
+                                <Label htmlFor="name" className="text-[#000000] font-poppins">
+                                    Name</Label>
+                                <Input type="text" id="name" placeholder="Enter your name" />
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <p className="font-poppins text-[#000000] pt-8">Email address</p>
-                                <input type="text" placeholder="Enter your email" className="min-w-[300px] 
-                            h-[36px] font-poppins pl-4 outline-none ring ring-[#D9D9D9] rounded-md"/>
+                            <div className="grid w-full max-w-sm items-center gap-3 mt-4">
+                                <Label htmlFor="email" className="text-[#000000] font-poppins">
+                                    Email address</Label>
+                                <Input type="email" id="email" placeholder="Enter your email" />
                             </div>
                         </div>
 
-                        <button className="bg-[#000000] text-[#FFFFFF] px-8 py-2 lg:ml-170 mt-5 
-                        rounded-md font-poppins">Update Profile</button>
+                        <div className="w-full max-w-[820px] flex justify-end mt-3 lg:mt-12">
+                            <Button className="w-full max-w-[200px] font-poppins cursor-pointer  
+                            hover:scale-105 hover:shadow-lg">Update Profile</Button>
+                        </div>
                     </form>
                 </div>
 
@@ -84,33 +95,69 @@ export default function AccountSettings() {
                         <div className="w-full h-[1.5px] bg-[#000000] mt-3" />
 
                         <div className="flex flex-col">
-                            <div className="flex flex-col gap-2">
-                                <p className="font-poppins text-[#000000] pt-8">Current Password</p>
-                                <input type="password" placeholder="Enter your password"
-                                    className="min-w-[300px] h-[36px] font-poppins pl-4 outline-none ring 
-                                ring-[#D9D9D9] rounded-md"/>
+                            <div className="relative w-full max-w-sm mt-4 grid gap-3">
+                                <Label htmlFor="email" className="text-[#000000] font-poppins">Current
+                                    Password</Label>
+                                <Input
+                                    type={showPassword1 ? "text" : "password"}
+                                    placeholder="Enter your current password"
+                                    className="pr-10 font-poppins" // leave space for the button
+                                />
+                                <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8 
+                        cursor-pointer" onClick={() => setShowPassword1(!showPassword1)}>
+                                    {showPassword1 ? (
+                                        <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                        <Eye className="h-4 w-4" />
+                                    )}
+                                </Button>
                             </div>
 
                             <div className="flex flex-col lg:flex-row gap-1 lg:gap-12">
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-poppins text-[#000000] pt-8">New Password</p>
-                                    <input type="password" placeholder="Enter your password"
-                                        className="min-w-[300px] h-[36px] font-poppins pl-4 outline-none ring 
-                                    ring-[#D9D9D9] rounded-md"/>
+                                <div className="relative w-full max-w-sm mt-4 grid gap-3">
+                                    <Label htmlFor="email" className="text-[#000000] font-poppins">
+                                        New Password</Label>
+                                    <Input
+                                        type={showPassword2 ? "text" : "password"}
+                                        placeholder="Enter your new password"
+                                        className="pr-10 font-poppins" // leave space for the eye button
+                                    />
+                                    <Button variant="ghost" className="absolute right-1 top-1/2 
+                                    -translate-1/8 cursor-pointer"
+                                        onClick={() => setShowPassword2(!showPassword2)}>
+                                        {showPassword2 ? (
+                                            <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                            <Eye className="h-4 w-4" />
+                                        )}
+                                    </Button>
                                 </div>
 
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-poppins text-[#000000] pt-8">Confirm New
-                                        Password</p>
-                                    <input type="password" placeholder="Confirm your password"
-                                        className="min-w-[300px] h-[36px] font-poppins pl-4 outline-none ring 
-                                    ring-[#D9D9D9] rounded-md"/>
+                                <div className="relative w-full max-w-sm mt-4 grid gap-3">
+                                    <Label htmlFor="email" className="text-[#000000] font-poppins">
+                                        Confirm New Password</Label>
+                                    <Input
+                                        type={showPassword3 ? "text" : "password"}
+                                        placeholder="Confirm your new password"
+                                        className="pr-10 font-poppins" // leave space for the button
+                                    />
+                                    <Button variant="ghost" className="absolute right-1 top-1/2 
+                                    -translate-1/8 cursor-pointer"
+                                        onClick={() => setShowPassword3(!showPassword3)}>
+                                        {showPassword3 ? (
+                                            <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                            <Eye className="h-4 w-4" />
+                                        )}
+                                    </Button>
                                 </div>
                             </div>
                         </div>
 
-                        <button className="bg-[#000000] text-[#FFFFFF] px-8 py-2 lg:ml-160 mt-10 
-                        rounded-md font-poppins">Change Password</button>
+                        <div className="w-full max-w-[820px] flex justify-end mt-3 lg:mt-12">
+                            <Button className="w-full max-w-[200px] font-poppins cursor-pointer  
+                            hover:scale-105 hover:shadow-lg">Change Password</Button>
+                        </div>
                     </form>
                 </div>
             </div>

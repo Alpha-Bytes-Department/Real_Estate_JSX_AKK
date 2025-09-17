@@ -10,7 +10,8 @@ import { Eye } from 'lucide-react';
 import { EyeOff } from 'lucide-react';
 
 export default function SignIn() {
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
     return (
         <div className="w-full h-screen flex">
             <div className="w-full lg:w-1/2 h-screen flex flex-col items-center justify-center">
@@ -31,13 +32,13 @@ export default function SignIn() {
                     <div className="relative w-full max-w-sm mt-4 grid gap-3">
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Password</Label>
                         <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword1 ? "text" : "password"}
                             placeholder="Enter your password"
                             className="pr-10 font-poppins" // leave space for the eye button
                         />
                         <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8
-                        cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-                            {showPassword ? (
+                        cursor-pointer" onClick={() => setShowPassword(!showPassword1)}>
+                            {showPassword1 ? (
                                 <EyeOff className="h-4 w-4" />
                             ) : (
                                 <Eye className="h-4 w-4" />
@@ -49,13 +50,13 @@ export default function SignIn() {
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Confirm
                             Password</Label>
                         <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword2 ? "text" : "password"}
                             placeholder="Again enter your password"
                             className="pr-10 font-poppins" // leave space for the button
                         />
                         <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8 
-                        cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}>
-                            {showPassword ? (
+                        cursor-pointer" onClick={() => setShowPassword2(!showPassword2)}>
+                            {showPassword2 ? (
                                 <EyeOff className="h-4 w-4" />
                             ) : (
                                 <Eye className="h-4 w-4" />
