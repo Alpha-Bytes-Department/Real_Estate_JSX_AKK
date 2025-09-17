@@ -12,50 +12,44 @@ export default function AccountSettings() {
     const [showPassword3, setShowPassword3] = useState(false);
     return (
         <div className="w-full h-screen flex gap-12 bg-[#F9FAFB]">
-            <div className="w-1/4 h-screen hidden lg:flex flex-col justify-between">
-                <div className="flex flex-col gap-4 pt-[152px]">
-                    <h1 className="text-[#000000] font-poppins font-semibold text-3xl text-center">
+            <div className="w-1/4 h-screen pl-15 hidden lg:flex flex-col justify-between">
+                <div className="w-full max-w-sm flex flex-col gap-4 pt-[152px]">
+                    <h1 className="text-[#000000] font-poppins font-semibold text-3xl text-center pb-10">
                         Account Settings</h1>
-                    <button>
-                        <div className="w-full h-[40px] flex items-center justify-between bg-[#D9D9D9] 
-                                        mt-3 rounded-sm cursor-pointer">
-                            <p className="text-[#000000] font-poppins pl-3">Profile Settings</p>
-                            <Image src="user-logo.svg" alt="user-logo" width={20} height={20}
-                                className="" />
-                        </div>
-                    </button>
+                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+                        <Label htmlFor="profile-settings" className="text-[#000000] font-poppins 
+                        cursor-pointer text-base">Profile Settings</Label>
+                        <Image src="/user-logo.svg" alt="user-logo" height={15} width={20}
+                            className="" />
+                    </Button>
 
-                    <button>
-                        <div className="w-full h-[40px] flex items-center justify-between 
-                                            bg-[#D9D9D9] rounded-sm cursor-pointer">
-                            <p className="text-[#000000] font-poppins pl-3">Saved Properties</p>
-                            <Image src="bookmark.svg" alt="bookmark-logo" width={20} height={20}
-                                className="" />
-                        </div>
-                    </button>
+                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+                        <Label htmlFor="saved-properties" className="text-[#000000] font-poppins 
+                        cursor-pointer text-base">Saved Properties</Label>
+                        <Image src="/bookmark.svg" alt="bookmark-logo" height={15} width={20}
+                            className="" />
+                    </Button>
 
-                    <button>
-                        <div className="w-full h-[40px] flex items-center justify-between 
-                                            bg-[#D9D9D9] rounded-sm cursor-pointer">
-                            <p className="text-[#000000] font-poppins pl-3">Listings</p>
-                            <Image src="list.svg" alt="list-logo" width={20} height={20}
-                                className="" />
-                        </div>
-                    </button>
+                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+                        <Label htmlFor="listings" className="text-[#000000] font-poppins 
+                        cursor-pointer text-base">Listings</Label>
+                        <Image src="/list.svg" alt="list-logo" height={15} width={20}
+                            className="" />
+                    </Button>
                 </div>
 
-                <div className="flex flex-col gap-4 pb-[152px]">
-                    <button>
-                        <div className="w-full h-[40px] bg-[#D9D9D9] rounded-sm cursor-pointer">
-                            <p className="text-[#000000] font-poppins pt-2 pl-3">Privacy Policy</p>
-                        </div>
-                    </button>
+                <div className="w-full max-w-sm flex flex-col gap-4 pb-[152px]">
+                    <Button className="flex items-center justify-center cursor-pointer bg-[#D9D9D9] 
+                    hover:bg-[#D9D9D9]">
+                        <Label htmlFor="privacy-policy" className="text-[#000000] font-poppins 
+                        cursor-pointer text-base">Privacy Policy</Label>
+                    </Button>
 
-                    <button>
-                        <div className="w-full h-[40px] bg-[#D9D9D9] rounded-sm cursor-pointer">
-                            <p className="text-[#000000] font-poppins pt-2 pl-3">Terms of Services</p>
-                        </div>
-                    </button>
+                    <Button className="flex items-center justify-center cursor-pointer bg-[#D9D9D9] 
+                    hover:bg-[#D9D9D9]">
+                        <Label htmlFor="terms-of-services" className="text-[#000000] font-poppins 
+                        cursor-pointer text-base">Terms of Services</Label>
+                    </Button>
                 </div>
             </div>
 
@@ -71,13 +65,15 @@ export default function AccountSettings() {
                             <div className="grid w-full max-w-sm items-center gap-3 mt-6">
                                 <Label htmlFor="name" className="text-[#000000] font-poppins">
                                     Name</Label>
-                                <Input type="text" id="name" placeholder="Enter your name" />
+                                <Input type="text" id="name" placeholder="Enter your name"
+                                    className="font-poppins" />
                             </div>
 
                             <div className="grid w-full max-w-sm items-center gap-3 mt-4">
                                 <Label htmlFor="email" className="text-[#000000] font-poppins">
                                     Email address</Label>
-                                <Input type="email" id="email" placeholder="Enter your email" />
+                                <Input type="email" id="email" placeholder="Enter your email"
+                                    className="font-poppins" />
                             </div>
                         </div>
 
@@ -104,7 +100,7 @@ export default function AccountSettings() {
                                     className="pr-10 font-poppins" // leave space for the button
                                 />
                                 <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8 
-                        cursor-pointer" onClick={() => setShowPassword1(!showPassword1)}>
+                                cursor-pointer" onClick={() => setShowPassword1(!showPassword1)}>
                                     {showPassword1 ? (
                                         <EyeOff className="h-4 w-4" />
                                     ) : (

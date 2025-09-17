@@ -21,12 +21,14 @@ export default function SignIn() {
 
                     <div className="grid w-full max-w-sm items-center gap-3 mt-6">
                         <Label htmlFor="name" className="text-[#000000] font-poppins">Name</Label>
-                        <Input type="text" id="name" placeholder="Enter your name" />
+                        <Input type="text" id="name" placeholder="Enter your name"
+                            className="font-poppins" />
                     </div>
 
                     <div className="grid w-full max-w-sm items-center gap-3 mt-4">
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Email address</Label>
-                        <Input type="email" id="email" placeholder="Enter your email" />
+                        <Input type="email" id="email" placeholder="Enter your email"
+                            className="font-poppins" />
                     </div>
 
                     <div className="relative w-full max-w-sm mt-4 grid gap-3">
@@ -85,7 +87,7 @@ export default function SignIn() {
 
                     <div className="w-full max-w-sm flex flex-col lg:flex-row gap-8 mt-4">
                         <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                            <Image src="/Google_Icon.svg" alt="apple_icon" height={10} width={15}
+                            <Image src="/Google_Icon.svg" alt="google_icon" height={10} width={15}
                                 className="" />
                             <Label htmlFor="google-sign-in" className="text-[#000000] font-poppins 
                             font-sm cursor-pointer">Sign in with Google</Label>

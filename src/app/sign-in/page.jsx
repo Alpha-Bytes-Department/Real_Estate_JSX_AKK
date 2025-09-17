@@ -19,7 +19,8 @@ export default function SignIn() {
 
                     <div className="grid w-full max-w-sm items-center gap-3 mt-6">
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Email address</Label>
-                        <Input type="email" id="email" placeholder="Enter your email" />
+                        <Input type="email" id="email" placeholder="Enter your email"
+                            className="font-poppins" />
                     </div>
 
                     <div className="relative w-full max-w-sm mt-4 grid gap-3">
