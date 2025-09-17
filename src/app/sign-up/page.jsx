@@ -33,10 +33,10 @@ export default function SignIn() {
                         <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
-                            className="pr-10 font-poppins" // leave space for the button
+                            className="pr-10 font-poppins" // leave space for the eye button
                         />
                         <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8
-                        cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}>
+                        cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
                             {showPassword ? (
                                 <EyeOff className="h-4 w-4" />
                             ) : (
@@ -82,7 +82,7 @@ export default function SignIn() {
                         <div className="w-1/2 h-[1px] bg-gray-300" />
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-8 w-full max-w-sm mt-4">
+                    <div className="w-full max-w-sm flex flex-col lg:flex-row gap-8 mt-4">
                         <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
                             <Image src="/Google_Icon.svg" alt="apple_icon" height={10} width={15}
                                 className="" />

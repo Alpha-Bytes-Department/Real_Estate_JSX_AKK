@@ -11,25 +11,26 @@ export default function FirstPage() {
       <div className="max-w-[300px] w-full h-[70px] relative">
         <Image src="/HomePageLogo.svg" alt="1st_page" fill />
       </div>
-      <Label htmlFor="title" className="font-poppins text-base text-center">Turning Complex Zoning Into Clear Investment
-        Opportunities.</Label>
+      <Label htmlFor="title" className="font-poppins text-base text-center">Turning Complex Zoning Into
+        Clear Investment Opportunities.</Label>
 
-      <div className="flex flex-col lg:flex-row items-center justify-center lg:gap-16 mt-6 w-full">
+      <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 mt-6">
         <div className="w-full max-w-xs">
           <Link href="/sign-up">
-            <Button className="w-full mt-4 cursor-pointer hover:scale-105 
+            <Button className="w-full cursor-pointer hover:scale-105
             hover:shadow-lg font-poppins py-6">Sign Up</Button>
           </Link>
         </div>
         <div className="w-full max-w-xs">
           <Link href="/sign-in">
-            <Button className="w-full mt-4 cursor-pointer hover:scale-105 
+            <Button className="w-full cursor-pointer hover:scale-105 
             hover:shadow-lg font-poppins py-6">Log In</Button>
           </Link>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 w-full max-w-xs mt-6">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 
+      w-full max-w-xs mt-6">
         <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
           <Image src="/Google_Icon.svg" alt="apple_icon" height={10} width={15}
             className="" />
