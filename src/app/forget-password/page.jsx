@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 export default function ForgetPassword() {
     return (
@@ -8,21 +11,27 @@ export default function ForgetPassword() {
             <p className="text-[#8F8C8C] text-xl font-poppins">No worries! Enter your email below and
                 we’ll send you a link to reset it.</p>
 
-            <input placeholder="Enter your registered email address" className="min-w-[300px] h-[45px] 
-            ring-2 ring-[#D9D9D9] pl-4 rounded-md text-[#877E7E] outline-none font-poppins 
-            font-medium"/>
+            <div className="w-full max-w-sm mt-6">
+                <Input type="email" id="email" placeholder="Enter your email" />
+            </div>
 
-            <Link href="/check-your-inbox-page">
-                <button className="min-w-[300px] h-[45px] bg-[#000000] rounded-md text-[#FFFFFF]
-            font-poppins">Send Reset Link</button>
-            </Link>
+            <div className="w-full max-w-sm mt-1">
+                <Link href="/check-your-inbox-page">
+                    <Button className="w-full font-poppins cursor-pointer hover:scale-105 
+                    hover:shadow-lg">Send Reset Link</Button>
+                </Link>
+            </div>
 
             <div className="flex flex-col items-center justify-center">
                 <p className="text-[#8F8C8C] font-poppins">A password reset link will be sent to your
                     email address if it’s</p>
                 <p className="text-[#8F8C8C] font-poppins">associated with an account</p>
             </div>
-            <a href="/sign-in" className="text-[#1E1E1E] font-poppins">Back to Login</a>
+
+            <div className="flex gap-1">
+                <IoIosArrowRoundBack className="translate-y-1/4" />
+                <Link href="/sign-in" className="text-[#1E1E1E] font-poppins">Back to Login</Link>
+            </div>
         </div>
     );
 }
