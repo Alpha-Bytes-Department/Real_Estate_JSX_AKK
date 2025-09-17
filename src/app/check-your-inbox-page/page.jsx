@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button"
 
 export default function CheckYourInboxPage() {
     return (
@@ -18,10 +20,14 @@ export default function CheckYourInboxPage() {
             <p className="text-[#8F8C8C] font-poppins">Don’t receive the email? Check your spam
                 folder.</p>
 
-            <button className="min-w-[300px] h-[50px] bg-[#000000] text-[#FFFFFF] font-poppins
-            rounded-lg mt-6">Send Reset Link</button>
+            <div className="w-full max-w-sm mt-1">
+                <Link href="">
+                    <Button className="w-full font-poppins cursor-pointer hover:scale-105 
+                    hover:shadow-lg">Send Reset Link</Button>
+                </Link>
+            </div>
 
-            <a href="" className="text-[#FF3D00] font-poppins">Resend email (wait 30s)</a>
+            <Link href="" className="text-[#FF3D00] font-poppins">Resend email (wait 30s)</Link>
         </div>
     );
 }
