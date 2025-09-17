@@ -46,7 +46,7 @@ export default function SignIn() {
 
                     <div className="w-full max-w-sm">
                         <Link href="/dashboard">
-                            <Button className="w-full mt-4 cursor-pointer hover:scale-105 
+                            <Button className="w-full font-poppins mt-4 cursor-pointer hover:scale-105 
                             hover:shadow-lg">Log In</Button>
                         </Link>
                     </div>

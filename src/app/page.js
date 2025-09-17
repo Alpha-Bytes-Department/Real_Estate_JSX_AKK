@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 
 export default function FirstPage() {
   return (
@@ -9,11 +11,46 @@ export default function FirstPage() {
       <div className="max-w-[300px] w-full h-[70px] relative">
         <Image src="/HomePageLogo.svg" alt="1st_page" fill />
       </div>
-      <p className="text-black text-center font-poppins">Turning Complex Zoning
-        Into Clear Investment Opportunities.</p>
+      <Label htmlFor="title" className="font-poppins text-base text-center">Turning Complex Zoning Into Clear Investment
+        Opportunities.</Label>
 
-      <div className="flex flex-col lg:flex-row gap-16 mt-6">
-        <Link href="/sign-up">
+      <div className="flex flex-col lg:flex-row items-center justify-center lg:gap-16 mt-6 w-full">
+        <div className="w-full max-w-xs">
+          <Link href="/sign-up">
+            <Button className="w-full mt-4 cursor-pointer hover:scale-105 
+            hover:shadow-lg font-poppins py-6">Sign Up</Button>
+          </Link>
+        </div>
+        <div className="w-full max-w-xs">
+          <Link href="/sign-in">
+            <Button className="w-full mt-4 cursor-pointer hover:scale-105 
+            hover:shadow-lg font-poppins py-6">Log In</Button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 w-full max-w-xs mt-6">
+        <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+          <Image src="/Google_Icon.svg" alt="apple_icon" height={10} width={15}
+            className="" />
+          <Label htmlFor="google-sign-in" className="text-[#000000] font-poppins 
+          font-sm cursor-pointer">Sign in with Google</Label>
+        </Button>
+
+        <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+          <Image src="/Apple_Icon.svg" alt="apple_icon" height={10} width={15}
+            className="" />
+          <Label htmlFor="apple-sign-in" className="text-[#000000] font-poppins 
+          font-sm cursor-pointer">Sign in with Apple</Label>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
+
+{/* <Link href="/sign-up">
           <button className="text-[#FFFFFF] bg-[#000000] w-[300px] h-[60px] rounded-md
           font-poppins cursor-pointer transition duration-300 hover:scale-105 hover:shadow-lg">
             Sign Up</button>
@@ -23,31 +60,7 @@ export default function FirstPage() {
           <button className="text-[#FFFFFF] bg-[#000000] w-[300px] h-[60px] rounded-md
         font-poppins cursor-pointer transition duration-300 hover:scale-105 hover:shadow-lg">
             Log In</button>
-        </Link>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-8 mt-6">
-        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2 
-        ring-[#D9D9D9] w-[220px] h-[40px] rounded-md font-poppins cursor-pointer transition 
-        duration-300 ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
-          <Image src="/Google_Icon.svg" alt="google_icon" height={20} width={20}
-            className="ml-4" />
-          <p className="text-[#000000] font-poppins text-sm">Sign in with Google</p>
-        </button>
-
-        <button className="flex items-center justify-center gap-3 text-[#000000] ring-2 
-        ring-[#D9D9D9] w-[220px] h-[40px] rounded-md font-poppins cursor-pointer transition 
-        duration-300 ease-in-out hover:ring-[#4285F4] hover:text-[#4285F4]">
-          <Image src="/Apple_Icon.svg" alt="apple_icon" height={20} width={20}
-            className="ml-4" />
-          <p className="text-[#000000] font-poppins text-sm">Sign in with Apple</p>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-
+        </Link> */}
 
 
 

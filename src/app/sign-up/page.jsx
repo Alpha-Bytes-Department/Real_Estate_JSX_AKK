@@ -5,9 +5,9 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Eye } from 'lucide-react';
 import { EyeOff } from 'lucide-react';
-import { Checkbox } from "@/components/ui/checkbox"
 
 export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
@@ -70,8 +70,8 @@ export default function SignIn() {
                     </div>
 
                     <div className="w-full max-w-sm mt-6">
-                        <Link href="/dashboard">
-                            <Button className="w-full cursor-pointer hover:scale-105 
+                        <Link href="/sign-in">
+                            <Button className="w-full font-poppins cursor-pointer hover:scale-105 
                             hover:shadow-lg">Sign Up</Button>
                         </Link>
                     </div>
