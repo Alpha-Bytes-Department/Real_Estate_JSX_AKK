@@ -231,7 +231,7 @@ export default function Dashboard() {
                             </Link>
                         </div>
 
-                        <div className="w-full h-[40px] flex items-center gap-2 pl-4">
+                        <div className="w-full flex items-center gap-2 pl-4">
                             <div className="w-full max-w-[80px] h-[1px] bg-[#8F8C8C]" />
                             <p className="text-[#A4A3A3] font-poppins">and</p>
                             <div className="w-full max-w-[80px] h-[1px] bg-[#8F8C8C]" />
