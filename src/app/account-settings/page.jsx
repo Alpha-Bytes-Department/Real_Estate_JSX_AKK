@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
+import Link from "next/link";
 
 export default function AccountSettings() {
     const [showPassword1, setShowPassword1] = useState(false);
@@ -13,43 +14,66 @@ export default function AccountSettings() {
     return (
         <div className="w-full h-screen flex gap-12 bg-[#F9FAFB]">
             <div className="w-1/4 h-screen pl-15 hidden lg:flex flex-col justify-between">
-                <div className="w-full max-w-sm flex flex-col gap-4 pt-[152px]">
+                <div className="w-full max-w-sm flex flex-col gap-6 pt-38">
                     <h1 className="text-[#000000] font-poppins font-semibold text-3xl text-center pb-10">
                         Account Settings</h1>
-                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                        <Label htmlFor="profile-settings" className="text-[#000000] font-poppins 
-                        cursor-pointer text-base">Profile Settings</Label>
-                        <Image src="/user-logo.svg" alt="user-logo" height={15} width={20}
-                            className="" />
-                    </Button>
+                    <div className="w-full">
+                        <Link href="/account-settings">
+                            <Button className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
+                            hover:bg-[#D9D9D9]">
+                                <Label htmlFor="profile-settings" className="text-[#000000] font-poppins 
+                                cursor-pointer text-base">Profile Settings</Label>
+                                <Image src="/user-logo.svg" alt="user-logo" height={15} width={20}
+                                    className="" />
+                            </Button>
+                        </Link>
+                    </div>
 
-                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                        <Label htmlFor="saved-properties" className="text-[#000000] font-poppins 
-                        cursor-pointer text-base">Saved Properties</Label>
-                        <Image src="/bookmark.svg" alt="bookmark-logo" height={15} width={20}
-                            className="" />
-                    </Button>
+                    <div className="w-full">
+                        <Link href="/saved-properties">
+                            <Button className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
+                            hover:bg-[#D9D9D9]">
+                                <Label htmlFor="profile-settings" className="text-[#000000] font-poppins 
+                                cursor-pointer text-base">Saved Properties</Label>
+                                <Image src="/bookmark.svg" alt="bookmark-logo" height={15} width={20}
+                                    className="" />
+                            </Button>
+                        </Link>
+                    </div>
 
-                    <Button className="flex justify-between cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                        <Label htmlFor="listings" className="text-[#000000] font-poppins 
-                        cursor-pointer text-base">Listings</Label>
-                        <Image src="/list.svg" alt="list-logo" height={15} width={20}
-                            className="" />
-                    </Button>
+                    <div className="w-full">
+                        <Link href="/listings">
+                            <Button className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
+                            hover:bg-[#D9D9D9]">
+                                <Label htmlFor="listings" className="text-[#000000] font-poppins 
+                                cursor-pointer text-base">Listings</Label>
+                                <Image src="/list.svg" alt="list-logo" height={15} width={20}
+                                    className="" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                <div className="w-full max-w-sm flex flex-col gap-4 pb-[152px]">
-                    <Button className="flex items-center justify-center cursor-pointer bg-[#D9D9D9] 
-                    hover:bg-[#D9D9D9]">
-                        <Label htmlFor="privacy-policy" className="text-[#000000] font-poppins 
-                        cursor-pointer text-base">Privacy Policy</Label>
-                    </Button>
+                <div className="w-full max-w-sm flex flex-col gap-8 pb-38">
+                    <div className="w-full">
+                        <Link href="">
+                            <Button className="w-full flex items-center justify-center cursor-pointer 
+                            bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+                                <Label htmlFor="privacy-policy" className="text-[#000000] font-poppins 
+                                cursor-pointer text-base">Privacy Policy</Label>
+                            </Button>
+                        </Link>
+                    </div>
 
-                    <Button className="flex items-center justify-center cursor-pointer bg-[#D9D9D9] 
-                    hover:bg-[#D9D9D9]">
-                        <Label htmlFor="terms-of-services" className="text-[#000000] font-poppins 
-                        cursor-pointer text-base">Terms of Services</Label>
-                    </Button>
+                    <div className="w-full">
+                        <Link href="">
+                            <Button className="w-full flex items-center justify-center cursor-pointer 
+                            bg-[#D9D9D9] hover:bg-[#D9D9D9]">
+                                <Label htmlFor="terms-of-services" className="text-[#000000] font-poppins 
+                                cursor-pointer text-base">Terms of Services</Label>
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
 
