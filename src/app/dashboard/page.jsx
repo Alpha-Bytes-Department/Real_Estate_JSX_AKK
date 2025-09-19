@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider"
 import Link from "next/link";
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 export default function Dashboard() {
     const [zoningMapClicked, setZoningMapClicked] = useState(false);
@@ -64,29 +65,36 @@ export default function Dashboard() {
                 </Map>
             </APIProvider>
 
-            <div className="absolute top-4 w-full flex justify-between">
-                <div className="flex lg:max-w-[370px] h-[40px] lg:ml-8 mt-2 ring-2 ring-[#000000] 
-            bg-[#000000] rounded-md">
+            <div className="absolute top-1 right-8">
+                <p className="text-black font-poppins">Maya</p>
+            </div>
+
+            <div className="absolute top-8 w-full flex justify-between">
+                {/*search box*/}
+                <div className="flex lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8 mt-2 
+                ring-2 ring-[#000000] bg-[#000000] rounded-md">
                     <Image src="/search.svg" alt="search-icon" width={20} height={20}
                         className="invert ml-2" />
-                    <input type="text" placeholder="Search by address,cityc or neighorhood..."
-                        className="outline-none pl-2 font-poppins text-white" />
-                    <button className="bg-[#2C2B2B] font-poppins text-[#FFFFFF] px-2 mr-2 rounded-md">
-                        Search</button>
+                    <Input type="text" placeholder="Search by address,city or neighborhood..."
+                        className="font-poppins text-white !border-0 !ring-0 !focus:ring-0 
+                    !focus:border-transparent !outline-none text-2xl -translate-y-1/8"/>
+                    <div className="w-full max-w-[80px]">
+                        <Link href="">
+                            <Button className="w-full !h-[30px] font-poppins text-base cursor-pointer 
+                            hover:scale-105 hover:shadow-lg">Search</Button>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="hidden lg:block">
-                    <Image src="/HomePageLogo.svg" alt="1st_page" width={300} height={100} />
+                    <Image src="/HomePageLogo.svg" alt="1st_page" width={200} height={100} />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <p className="text-black font-poppins">Maya</p>
-                    <div className="w-12 h-12 relative mr-8">
-                        <button className="cursor-pointer" onClick={handleAccount}>
-                            <Image src="/User.jpg" alt="user" fill className="rounded-full object-cover 
+                <div className="w-12 h-12 relative mr-8">
+                    <button className="cursor-pointer" onClick={handleAccount}>
+                        <Image src="/User.jpg" alt="user" fill className="rounded-full object-cover 
                         ring-3 ring-[#00308F]"/>
-                        </button>
-                    </div>
+                    </button>
                 </div>
             </div>
 
