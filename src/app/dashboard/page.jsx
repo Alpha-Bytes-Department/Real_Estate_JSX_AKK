@@ -71,7 +71,7 @@ export default function Dashboard() {
 
             <div className="absolute top-8 w-full flex justify-between">
                 {/*search box*/}
-                <div className="flex lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8 mt-2 
+                <div className="flex lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
                 ring-2 ring-[#000000] bg-[#000000] rounded-md">
                     <Image src="/search.svg" alt="search-icon" width={20} height={20}
                         className="invert ml-2" />
