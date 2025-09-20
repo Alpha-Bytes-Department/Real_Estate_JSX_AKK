@@ -35,3 +35,29 @@ export default function ForgetPassword() {
         </div>
     );
 }
+
+
+
+
+// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger }
+//     from "@/components/ui/dialog"
+// import { Button } from "@/components/ui/button"
+
+// export default function PopupDemo() {
+//     return (
+//         <Dialog>
+//             <DialogTrigger asChild>
+//                 <Button>Open Popup</Button>
+//             </DialogTrigger>
+//             <DialogContent>
+//                 <DialogHeader>
+//                     <DialogTitle>Popup Title</DialogTitle>
+//                     <DialogDescription>
+//                         This is a popup window content.
+//                     </DialogDescription>
+//                 </DialogHeader>
+//                 <p>You can put forms, inputs, or anything here.</p>
+//             </DialogContent>
+//         </Dialog>
+//     )
+// }
