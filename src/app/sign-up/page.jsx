@@ -44,7 +44,6 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors, isSubmitting },
         setValue,
-        watch
     } = useForm({
         resolver: zodResolver(signUpSchema),
         mode: "onChange", // Add this for immediate validation
