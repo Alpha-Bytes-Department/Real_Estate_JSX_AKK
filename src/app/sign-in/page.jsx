@@ -2,42 +2,99 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Eye } from 'lucide-react';
-import { EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from "next/navigation";
+
+
+// Zod validation schema
+const signUpSchema = z.object({
+    email: z.string()
+        .email("Please enter a valid email address"),
+    password: z.string()
+        .min(8, "Password must be at least 8 characters")
+        .regex(/(?=.*[a-z])/, "Password must contain at least one lowercase letter")
+        .regex(/(?=.*[A-Z])/, "Password must contain at least one uppercase letter")
+        .regex(/(?=.*\d)/, "Password must contain at least one number"),
+});
+
 
 export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: zodResolver(signUpSchema),
+        mode: "onChange", // Add this for immediate validation
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            agreeToTerms: false
+        }
+    });
+
+    const onSubmit = async (data) => {
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("Form submitted:", data);
+            router.push("/dashboard");
+            // Handle successful submission here
+        } catch (error) {
+            console.error("Submission error:", error);
+        }
+    };
+
     return (
         <div className="w-full h-screen flex">
             <div className="w-full lg:w-1/2 h-screen flex flex-col items-center justify-center">
-                <form action="">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm">
                     <h1 className="text-[#000000] font-poppins font-medium text-2xl">
                         Welcome back!</h1>
 
-                    <div className="grid w-full max-w-sm items-center gap-3 mt-6">
+                    <div className="grid w-full items-center gap-3 mt-4">
                         <Label htmlFor="email" className="text-[#000000] font-poppins">Email address</Label>
                         <Input type="email" id="email" placeholder="Enter your email"
-                            className="font-poppins" />
+                            className="font-poppins" {...register("email")} />
+                        {errors.email && (
+                            <p className="text-red-500 text-sm font-poppins">{errors.email.message}</p>
+                        )}
                     </div>
 
-                    <div className="relative w-full max-w-sm mt-4 grid gap-3">
-                        <Label htmlFor="email" className="text-[#000000] font-poppins">Password</Label>
-                        <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
-                            className="pr-10 font-poppins" // leave space for the button
-                        />
-                        <Button variant="ghost" className="absolute right-1 top-1/2 -translate-1/8
-                        cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}>
-                            {showPassword ? (
-                                <EyeOff className="h-4 w-4" />
-                            ) : (
-                                <Eye className="h-4 w-4" />
-                            )}
-                        </Button>
+                    <div className="w-full mt-4 grid gap-3">
+                        <Label htmlFor="password" className="text-[#000000] font-poppins">Password</Label>
+                        <div className="relative w-full">
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                placeholder="Enter your password"
+                                className="pr-10 font-poppins" // leave space for the eye button
+                                {...register("password")}
+                            />
+                            <Button type="button" variant="ghost" className="absolute right-1 top-1/2 
+                            -translate-y-1/2 cursor-pointer"
+                                onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? (
+                                    <EyeOff className="h-4 w-4" />
+                                ) : (
+                                    <Eye className="h-4 w-4" />
+                                )}
+                            </Button>
+                        </div>
+                        {errors.password && (
+                            <p className="text-red-500 text-sm font-poppins">{errors.password.message}</p>
+                        )}
                     </div>
 
                     <div className="flex justify-end pt-4">
@@ -45,11 +102,11 @@ export default function SignIn() {
                             forgot password?</Link>
                     </div>
 
-                    <div className="w-full max-w-sm">
-                        <Link href="/dashboard">
-                            <Button className="w-full font-poppins mt-4 cursor-pointer hover:scale-105 
-                            hover:shadow-lg">Log In</Button>
-                        </Link>
+                    <div className="w-full mt-5">
+                        <Button type="submit" className="w-full font-poppins cursor-pointer 
+                        hover:scale-105 hover:shadow-lg" disabled={isSubmitting}>
+                            {isSubmitting ? "Logging In..." : "Log In"}
+                        </Button>
                     </div>
 
                     <div className="w-full max-w-sm flex gap-2 mt-10">
@@ -58,19 +115,13 @@ export default function SignIn() {
                         <div className="w-1/2 h-[1px] bg-gray-300" />
                     </div>
 
-                    <div className="w-full max-w-sm flex flex-col lg:flex-row gap-8 mt-4">
-                        <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                            <Image src="/Google_Icon.svg" alt="apple_icon" height={10} width={15}
+                    <div className="w-full mt-4">
+                        <Button className="w-full flex gap-3 cursor-pointer bg-[#D9D9D9] 
+                        hover:bg-[#D9D9D9]">
+                            <Image src="/Google_Icon.svg" alt="google_icon" height={10} width={15}
                                 className="" />
                             <Label htmlFor="google-sign-in" className="text-[#000000] font-poppins 
                             font-sm cursor-pointer">Sign in with Google</Label>
-                        </Button>
-
-                        <Button className="flex gap-3 cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]">
-                            <Image src="/Apple_Icon.svg" alt="apple_icon" height={10} width={15}
-                                className="" />
-                            <Label htmlFor="apple-sign-in" className="text-[#000000] font-poppins 
-                            font-sm cursor-pointer">Sign in with Apple</Label>
                         </Button>
                     </div>
 
@@ -87,6 +138,8 @@ export default function SignIn() {
         </div>
     );
 }
+
+
 
 
 
