@@ -57,8 +57,6 @@ export default function SignUp() {
         }
     });
 
-    const watchAgreeToTerms = watch("agreeToTerms");
-
     const onSubmit = async (data) => {
         try {
             // Simulate API call
