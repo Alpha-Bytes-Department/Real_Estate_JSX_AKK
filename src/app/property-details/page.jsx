@@ -23,14 +23,6 @@ export default function ViewAllImage() {
                 <Image src="/HomePageLogo.svg" alt="home-page-logo" height={70} width={150} />
             </div>
 
-            {/* <div className="max-w-full h-[500px] relative mt-8">
-                <Image src="/home_pic_1.jpg" alt="home-pic-1" fill />
-                <Link href="/view-all-images">
-                    <button className="absolute bottom-4 right-4 text-[#000000] font-poppins bg-[#FFFFFF] 
-                ring-2 ring-[#000000] px-4 py-1 rounded-sm hover:bg-[#3F3C3C] hover:text-[#FFFFFF] 
-                cursor-pointer">See All Images</button>
-                </Link>
-            </div> */}
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
                 <div className="relative lg:col-span-2 h-75">
