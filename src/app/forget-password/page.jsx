@@ -50,12 +50,12 @@ export default function ForgetPassword() {
 //                 <Button>Open Popup</Button>
 //             </DialogTrigger>
 //             <DialogContent>
-//                 <DialogHeader>
-//                     <DialogTitle>Popup Title</DialogTitle>
-//                     <DialogDescription>
-//                         This is a popup window content.
-//                     </DialogDescription>
-//                 </DialogHeader>
+                // <DialogHeader>
+                //     <DialogTitle>Popup Title</DialogTitle>
+                //     <DialogDescription>
+                //         This is a popup window content.
+                //     </DialogDescription>
+                // </DialogHeader>
 //                 <p>You can put forms, inputs, or anything here.</p>
 //             </DialogContent>
 //         </Dialog>
