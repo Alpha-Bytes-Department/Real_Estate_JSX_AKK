@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Data } from "@/components/data";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function ViewAllImage() {
     const [showMore, setShowMore] = useState(false);
@@ -11,9 +12,10 @@ export default function ViewAllImage() {
     function handleShowMore() {
         setShowMore(!showMore);
     }
+
     return (
-        <div className="min-h-screen p-8">
-            <div className="flex items-center justify-center gap-12">
+        <div className="min-h-screen p-3 lg:p-8">
+            <div className="flex items-center justify-center gap-8 lg:gap-12">
                 <div className="flex">
                     <ChevronLeft />
                     <Link href="/dashboard" className="font-poppins">Back to search</Link>
@@ -21,16 +23,39 @@ export default function ViewAllImage() {
                 <Image src="/HomePageLogo.svg" alt="home-page-logo" height={70} width={150} />
             </div>
 
-            <div className="max-w-full h-[500px] relative mt-8">
+            {/* <div className="max-w-full h-[500px] relative mt-8">
                 <Image src="/home_pic_1.jpg" alt="home-pic-1" fill />
                 <Link href="/view-all-images">
                     <button className="absolute bottom-4 right-4 text-[#000000] font-poppins bg-[#FFFFFF] 
                 ring-2 ring-[#000000] px-4 py-1 rounded-sm hover:bg-[#3F3C3C] hover:text-[#FFFFFF] 
                 cursor-pointer">See All Images</button>
                 </Link>
+            </div> */}
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
+                <div className="relative lg:col-span-2 h-75">
+                    <Image src="/home_pic_1.jpg" alt="home1" fill className="object-cover"/>
+                </div>
+                <div className="relative h-75">
+                    <Image src="/home_pic_2.jpg" alt="home2" fill className="object-cover"/>
+                </div>
+                <div className="relative h-75">
+                    <Image src="/home_pic_3.jpg" alt="home3" fill className="object-cover"/>
+                </div>
+
+                <div className="relative lg:col-span-2 h-75">
+                    <Image src="/home_pic_4.jpg" alt="home4" fill className="object-cover"/>
+                </div>
+                <div className="relative h-75">
+                    <Image src="/home_pic_5.jpg" alt="home5" fill className="object-cover"/>
+                </div>
+                <div className="relative h-75">
+                    <Image src="/home_pic_6.jpg" alt="home6" fill className="object-cover"/>
+                    <Button className="">See All</Button>
+                </div>
             </div>
 
-            <div className="font-poppins text-[#000000]">
+            <div className="font-poppins text-[#000000] mt-4">
                 <h1 className="font-semibold text-2xl pt-6">$350,000</h1>
                 <p>List Price</p>
                 <p>3692 W Highway 270, Pencil Bluff, AR 71965</p>
@@ -50,12 +75,12 @@ export default function ViewAllImage() {
             <h1 className="font-poppins font-semibold text-xl pt-4">What's special</h1>
 
             <div className="flex gap-4">
-                <div className="w-[180px] h-[40px] rounded-md mt-2 bg-[#DFDFDF] flex items-center
-                justify-center">
+                <div className="w-full max-w-[180px] h-[40px] rounded-md mt-2 bg-[#DFDFDF] flex 
+                items-center justify-center">
                     <p className="text-[#000000] font-poppins">Excellent visibility</p>
                 </div>
-                <div className="w-[180px] h-[40px] rounded-md mt-2 bg-[#DFDFDF] flex items-center
-                justify-center">
+                <div className="w-full max-w-[180px] h-[40px] rounded-md mt-2 bg-[#DFDFDF] flex 
+                items-center justify-center">
                     <p className="text-[#000000] font-poppins">Timeless Charm</p>
                 </div>
             </div>

@@ -56,6 +56,8 @@ export default function SignUp() {
         }
     });
 
+    const agreeToTerms = watch("agreeToTerms");
+
     const onSubmit = async (data) => {
         try {
             // Simulate API call
@@ -151,8 +153,7 @@ export default function SignUp() {
                     </div>
 
                     <div className="flex items-start gap-3 mt-4">
-                        <Checkbox id="terms-and-policy"
-                            checked={watchAgreeToTerms}
+                        <Checkbox id="terms-and-policy" checked={agreeToTerms}
                             onCheckedChange={(checked) => setValue("agreeToTerms", checked)}
                         />
                         <Label htmlFor="terms-and-policy" className="text-[#000000] font-poppins">

@@ -70,6 +70,7 @@ export default function Dashboard() {
                 >
                     <Marker position={markerLocation} onClick={() => setSmallPopUp(true)} />
                     {smallPopUp && (
+                        <Link href="/property-details">
                         <InfoWindow
                             position={markerLocation}
                             onCloseClick={() => setSmallPopUp(false)}
@@ -86,13 +87,9 @@ export default function Dashboard() {
                                     <p className="font-poppins text-[#000000]">6515 Belair Road
                                         (MDFS35424512)</p>
                                 </div>
-                                <Link href="/property-details">
-                                    <button className="mt-2 px-3 py-1 bg-blue-600 text-white rounded">
-                                        View Details
-                                    </button>
-                                </Link>
                             </div>
                         </InfoWindow>
+                        </Link>
                     )}
                 </Map>
             </APIProvider>
