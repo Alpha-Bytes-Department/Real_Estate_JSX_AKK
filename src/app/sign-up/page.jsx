@@ -44,6 +44,7 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors, isSubmitting },
         setValue,
+        watch,
     } = useForm({
         resolver: zodResolver(signUpSchema),
         mode: "onChange", // Add this for immediate validation
@@ -55,6 +56,9 @@ export default function SignUp() {
             agreeToTerms: false
         }
     });
+
+    // Watch the agreeToTerms field
+    const watchAgreeToTerms = watch("agreeToTerms");
 
     const onSubmit = async (data) => {
         try {
