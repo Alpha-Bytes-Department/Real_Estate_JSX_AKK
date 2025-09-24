@@ -13,11 +13,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useForm, Controller } from "react-hook-form";
 import { CiSearch } from "react-icons/ci";
+import PropertyDetails from "../property-details/page";
 
 export default function Dashboard() {
     const [zoningMapClicked, setZoningMapClicked] = useState(false);
     const [account, setAccount] = useState(false);
     const [smallPopUp, setSmallPopUp] = useState(false);
+    const [bigPopUp, setBigPopUp] = useState(false);
 
     function zoningPopUpShow() {
         setZoningMapClicked(true);
@@ -32,7 +34,7 @@ export default function Dashboard() {
         lng: -79.9959,
     });
 
-    const { register, handleSubmit, control } = useForm({
+    const { handleSubmit, control } = useForm({
     defaultValues: {
       soldListings: false,
       reviewed: false,
@@ -75,7 +77,8 @@ export default function Dashboard() {
                             position={markerLocation}
                             onCloseClick={() => setSmallPopUp(false)}
                         >
-                            <div className="w-[250px] h-[250px]">
+                            <div className="w-full max-w-[250px] h-[250px]" 
+                            onClick={()=>setBigPopUp(true)}>
                                 <div className="w-full h-[60%] relative">
                                     <Image src="/saved-properties-1.jpg" alt="pop-up-house" fill />
                                 </div>
@@ -94,6 +97,7 @@ export default function Dashboard() {
                         </InfoWindow>
                     )}
                 </Map>
+                {bigPopUp && <PropertyDetails/>}
             </APIProvider>
 
             <div className="absolute top-1 right-8">
@@ -604,15 +608,7 @@ export default function Dashboard() {
 
 
 
-// "use client"
-// import { APIProvider, Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
-// import Image from "next/image";
-// import { useState } from "react";
-// import { Slider } from "@/components/ui/slider"
-// import Link from "next/link";
-// import { Button } from "@/components/ui/button"
-// import { Label } from "@/components/ui/label"
-// import { Input } from "@/components/ui/input"
+
 
 // export default function Dashboard() {
 //     const [zoningMapClicked, setZoningMapClicked] = useState(false);
