@@ -12,11 +12,13 @@ from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useForm, Controller } from "react-hook-form";
+import PropertyDetails from "../property-details/page";
 
 export default function Dashboard() {
     const [zoningMapClicked, setZoningMapClicked] = useState(false);
     const [account, setAccount] = useState(false);
     const [smallPopUp, setSmallPopUp] = useState(false);
+    const [bigPopUp, setBigPopUp] = useState(false);
 
     function zoningPopUpShow() {
         setZoningMapClicked(true);
@@ -31,7 +33,7 @@ export default function Dashboard() {
         lng: -79.9959,
     });
 
-    const { register, handleSubmit, control } = useForm({
+    const { handleSubmit, control } = useForm({
     defaultValues: {
       soldListings: false,
       reviewed: false,
@@ -70,12 +72,12 @@ export default function Dashboard() {
                 >
                     <Marker position={markerLocation} onClick={() => setSmallPopUp(true)} />
                     {smallPopUp && (
-                        <Link href="/property-details">
                         <InfoWindow
                             position={markerLocation}
                             onCloseClick={() => setSmallPopUp(false)}
                         >
-                            <div className="w-[250px] h-[250px]">
+                            <div className="w-full max-w-[250px] h-[250px]" 
+                            onClick={()=>setBigPopUp(true)}>
                                 <div className="w-full h-[60%] relative">
                                     <Image src="/saved-properties-1.jpg" alt="pop-up-house" fill />
                                 </div>
@@ -89,9 +91,9 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </InfoWindow>
-                        </Link>
                     )}
                 </Map>
+                {bigPopUp && <PropertyDetails/>}
             </APIProvider>
 
             <div className="absolute top-1 right-8">
