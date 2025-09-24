@@ -3,19 +3,63 @@ import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Data } from "@/components/data";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
-export default function ViewAllImage() {
+export default function PropertyDetails() {
     const [showMore, setShowMore] = useState(false);
 
     function handleShowMore() {
         setShowMore(!showMore);
     }
 
+    const [markerLocation, setMarkerLocation] = useState({
+        lat: 40.4406,
+        lng: -79.9959,
+    });
+
+    const overviewRef = useRef(null);
+    const calculationRef = useRef(null);
+    const factsAndFeaturesRef = useRef(null);
+    const financialAnalysisRef = useRef(null);
+
+    function handleScrollToOverview() {
+        overviewRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+    }
+
+    function handleScrollToCalculation() {
+        calculationRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+    }
+
+    function handleScrollToFactsAndFeatures() {
+        factsAndFeaturesRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+    }
+
+    function handleScrollToFinancialAnalysis() {
+        financialAnalysisRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+    }
+
     return (
         <div className="min-h-screen p-3 lg:p-8">
-            <div className="flex items-center justify-center gap-8 lg:gap-12">
+            <div className="sticky top-0 z-50 bg-white py-5">
+                <div className="w-1/2 flex justify-between">
                 <div className="flex">
                     <ChevronLeft />
                     <Link href="/dashboard" className="font-poppins">Back to search</Link>
@@ -23,35 +67,43 @@ export default function ViewAllImage() {
                 <Image src="/HomePageLogo.svg" alt="home-page-logo" height={70} width={150} />
             </div>
 
-            {/* <div className="max-w-full h-[500px] relative mt-8">
-                <Image src="/home_pic_1.jpg" alt="home-pic-1" fill />
-                <Link href="/view-all-images">
-                    <button className="absolute bottom-4 right-4 text-[#000000] font-poppins bg-[#FFFFFF] 
-                ring-2 ring-[#000000] px-4 py-1 rounded-sm hover:bg-[#3F3C3C] hover:text-[#FFFFFF] 
-                cursor-pointer">See All Images</button>
-                </Link>
-            </div> */}
+            <nav className="w-full border-b border-t flex items-center justify-center space-x-6 
+            h-11 mt-4">
+                <p onClick={handleScrollToOverview}
+                    className="text-[#3F3C3C] font-poppins">Over View</p>
+                <p onClick={handleScrollToCalculation}
+                    className="text-[#3F3C3C] font-poppins">Calculation</p>
+                <Link href="" onClick={handleScrollToOverview}
+                    className="text-[#3F3C3C] font-poppins">Facts & Features</Link>
+                <Link href="" onClick={handleScrollToCalculation}
+                    className="text-[#3F3C3C] font-poppins">Financial Analysis</Link>
+            </nav>
+            </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 ref={overviewRef}">
                 <div className="relative lg:col-span-2 h-75">
-                    <Image src="/home_pic_1.jpg" alt="home1" fill className="object-cover"/>
+                    <Image src="/home_pic_1.jpg" alt="home1" fill className="object-cover" />
                 </div>
                 <div className="relative h-75">
-                    <Image src="/home_pic_2.jpg" alt="home2" fill className="object-cover"/>
+                    <Image src="/home_pic_2.jpg" alt="home2" fill className="object-cover" />
                 </div>
                 <div className="relative h-75">
-                    <Image src="/home_pic_3.jpg" alt="home3" fill className="object-cover"/>
+                    <Image src="/home_pic_3.jpg" alt="home3" fill className="object-cover" />
                 </div>
 
                 <div className="relative lg:col-span-2 h-75">
-                    <Image src="/home_pic_4.jpg" alt="home4" fill className="object-cover"/>
+                    <Image src="/home_pic_4.jpg" alt="home4" fill className="object-cover" />
                 </div>
                 <div className="relative h-75">
-                    <Image src="/home_pic_5.jpg" alt="home5" fill className="object-cover"/>
+                    <Image src="/home_pic_5.jpg" alt="home5" fill className="object-cover" />
                 </div>
                 <div className="relative h-75">
-                    <Image src="/home_pic_6.jpg" alt="home6" fill className="object-cover"/>
-                    <Button className="">See All</Button>
+                    <Image src="/home_pic_6.jpg" alt="home6" fill className="object-cover" />
+                    <Link href="/view-all-images">
+                        <Button className="absolute bottom-3 right-3 cursor-pointer bg-white 
+                    text-black font-poppins text-base hover:bg-white hover:text-black">
+                            See All</Button>
+                    </Link>
                 </div>
             </div>
 
@@ -119,7 +171,8 @@ export default function ViewAllImage() {
 
             <div className="w-full lg:h-[470px] border-2 border-[#8F8C8C] mt-6 rounded-md font-poppins">
                 <div className="p-6">
-                    <h1 className="text-[#000000] font-medium text-2xl">Per-Unit Price Calculation</h1>
+                    <h1 className="text-[#000000] font-medium text-2xl ref={calculationRef} ">
+                        Per-Unit Price Calculation</h1>
                     <div className="w-full h-[1px] bg-[#8F8C8C] mt-2" />
                     <div className="pt-2">
                         <p className="text-[#3F3C3C]">Methodology</p>
@@ -312,7 +365,17 @@ export default function ViewAllImage() {
                 <h1 className="text-[#000000] font-semibold font-poppins text-2xl">Location & Zoning
                     Map</h1>
                 <div className="w-full h-[350px] relative mt-4">
-                    <Image src="/property-details-map.png" alt="map" fill />
+                    <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
+                        <Map
+                            style={{ borderRadius: "20px" }}
+                            defaultZoom={13}
+                            defaultCenter={markerLocation}
+                            gestureHandling={"greedy"}
+                            disableDefaultUI
+                        >
+                            <Marker position={markerLocation} onClick={() => setSmallPopUp(true)} />
+                        </Map>
+                    </APIProvider>
                 </div>
             </div>
 
@@ -343,9 +406,10 @@ export default function ViewAllImage() {
                 Properties</h1>
 
             <div className="w-full flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
-                    <div className="w-1/3 h-full relative">
-                        <Image src="/comparable-properties-1.jpg" alt="comparable-properties-1" fill />
+                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6 shadow-lg">
+                    <div className="w-1/3 h-full p-3 relative">
+                        <Image src="/comparable-properties-1.jpg" alt="comparable-properties-1" fill
+                            className="object-cover" />
                     </div>
                     <div className="w-2/3 flex flex-col pt-8">
                         <h1 className="font-semibold font-poppins text-2xl text-[#000000]">456 Oak
@@ -355,9 +419,10 @@ export default function ViewAllImage() {
                     </div>
                 </div>
 
-                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6">
+                <div className="lg:w-1/2 h-[150px] relative bg-[#F9FAFB] flex gap-8 m-6 shadow-lg">
                     <div className="w-1/3 h-full relative">
-                        <Image src="/comparable-properties-2.jpg" alt="comparable-properties-1" fill />
+                        <Image src="/comparable-properties-2.jpg" alt="comparable-properties-1" fill
+                            className="object-cover" />
                     </div>
                     <div className="w-2/3 flex flex-col pt-8">
                         <h1 className="font-semibold font-poppins text-2xl text-[#000000]">456 Oak
