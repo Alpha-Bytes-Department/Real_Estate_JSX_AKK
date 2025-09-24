@@ -60,24 +60,24 @@ export default function PropertyDetails() {
         <div className="min-h-screen p-3 lg:p-8">
             <div className="sticky top-0 z-50 bg-white py-5">
                 <div className="w-1/2 flex justify-between">
-                <div className="flex">
-                    <ChevronLeft />
-                    <Link href="/dashboard" className="font-poppins">Back to search</Link>
+                    <div className="flex">
+                        <ChevronLeft />
+                        <Link href="/dashboard" className="font-poppins">Back to search</Link>
+                    </div>
+                    <Image src="/HomePageLogo.svg" alt="home-page-logo" height={70} width={150} />
                 </div>
-                <Image src="/HomePageLogo.svg" alt="home-page-logo" height={70} width={150} />
-            </div>
 
-            <nav className="w-full border-b border-t flex items-center justify-center space-x-6 
+                <nav className="w-full border-b border-t flex items-center justify-center space-x-6 
             h-11 mt-4">
-                <p onClick={handleScrollToOverview}
-                    className="text-[#3F3C3C] font-poppins">Over View</p>
-                <p onClick={handleScrollToCalculation}
-                    className="text-[#3F3C3C] font-poppins">Calculation</p>
-                <Link href="" onClick={handleScrollToOverview}
-                    className="text-[#3F3C3C] font-poppins">Facts & Features</Link>
-                <Link href="" onClick={handleScrollToCalculation}
-                    className="text-[#3F3C3C] font-poppins">Financial Analysis</Link>
-            </nav>
+                    <p onClick={handleScrollToOverview}
+                        className="text-[#3F3C3C] font-poppins">Over View</p>
+                    <p onClick={handleScrollToCalculation}
+                        className="text-[#3F3C3C] font-poppins">Calculation</p>
+                    <Link href="" onClick={handleScrollToOverview}
+                        className="text-[#3F3C3C] font-poppins">Facts & Features</Link>
+                    <Link href="" onClick={handleScrollToCalculation}
+                        className="text-[#3F3C3C] font-poppins">Financial Analysis</Link>
+                </nav>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 ref={overviewRef}">
