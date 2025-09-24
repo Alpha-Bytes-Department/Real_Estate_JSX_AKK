@@ -1,0 +1,97 @@
+@baseurl = http://10.10.12.51:4000/api/v1/user/
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5ODgyLCJpYXQiOjE3NTg0MTM0ODIsImp0aSI6IjM0NDljMmM4ODI2YzQzMTFiYmU4M2ZjMmUwMzcxZmIyIiwidXNlcl9pZCI6IjEzIn0.1tfvHqnnTq32YSs12RUbCBscga8aCfZyyWZE3ur6yd8
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1ODQ5OTg4MiwiaWF0IjoxNzU4NDEzNDgyLCJqdGkiOiJlNDMyNzczMzE2NDA0OTU5OTZjOTRhMWZmN2ZlODhlOCIsInVzZXJfaWQiOiIxMyJ9.VYNIezzm3WRlI7N60Ynj9Pyes_fZXTy3gmXvGvMdEMs
+
+
+### Test: Register User (POST /signup/)
+
+POST {{baseurl}}signup/ HTTP/1.1
+Content-Type: application/json
+ 
+{
+    "name": "JVAI",
+    "email": "mamom96071@camjoint.com",
+    "password": "password123",
+    "confirm_password": "password123"
+}
+ 
+
+ 
+### Test: Change Password (POST /change-password/)
+
+POST {{baseurl}}change-password/ HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+ 
+{
+  "old_password": "password123",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+ 
+###
+ 
+### Test: Login User (POST /login/)
+POST {{baseurl}}login/ HTTP/1.1
+Content-Type: application/json
+ 
+{
+  "email": "nares41970@cnguopin.com",
+  "password": "newpassword123"
+}
+ 
+###
+ 
+ 
+ 
+### Test: Request Password Reset (POST /password-reset/)
+POST {{baseurl}}password-reset/ HTTP/1.1
+Content-Type: application/json
+ 
+{
+  "email": "nares41970@cnguopin.com"
+}
+ 
+###
+ 
+### Test: Confirm Password Reset (POST /password-reset-confirm/<uidb64>/<token>/)
+# POST {{baseurl}}password-reset-confirm/{uidb64}/{token}/ HTTP/1.1
+POST {{baseurl}}password-reset-confirm/MTM/cwgcej-007c0a0c9e354f688fc7f90422b19d27/ HTTP/1.1
+Content-Type: application/json
+ 
+{
+  "password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+ 
+ 
+### Test: Retrieve User Profile (GET /profile/)
+GET {{baseurl}}profile/ HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+ 
+###
+ 
+### Test: Update User Profile (PATCH /profile/)
+PATCH {{baseurl}}profile/update/ HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+ 
+{
+  "name": "New Name",
+  "profile_pic": ""
+}
+ 
+###
+ 
+ 
+### Test: User Logout (POST /logout/)
+POST {{baseurl}}logout/ HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+ 
+{
+    "refresh": "{{refresh_token}}"
+}
+ 
+###

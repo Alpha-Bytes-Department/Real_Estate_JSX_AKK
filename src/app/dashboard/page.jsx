@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, }
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useForm, Controller } from "react-hook-form";
+import { CiSearch } from "react-icons/ci";
 import PropertyDetails from "../property-details/page";
 
 
@@ -61,6 +62,7 @@ export default function Dashboard() {
         setZoningMapClicked(false);
     };
 
+
     return (
         <div className="w-full h-screen relative">
             <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
@@ -90,6 +92,9 @@ export default function Dashboard() {
                                     <p className="font-poppins text-[#000000]">6515 Belair Road
                                         (MDFS35424512)</p>
                                 </div>
+                                <Link href="/property-details" className="mt-2 px-3 py-1 bg-blue-600 text-white rounded">
+                                    View Details
+                                </Link>
                             </div>
                         </InfoWindow>
                     )}
@@ -113,18 +118,13 @@ export default function Dashboard() {
 
             <div className="absolute top-8 w-full flex justify-between">
                 {/*search box*/}
-                <div className="flex lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
-                ring-2 ring-[#000000] bg-[#000000] rounded-md">
-                    <Image src="/search.svg" alt="search-icon" width={20} height={20}
-                        className="invert ml-2" />
-                    <Input type="text" placeholder="Search by address,city or neighborhood..."
-                        className="font-poppins text-white !border-0 !ring-0 !focus:ring-0 
-                    !focus:border-transparent !outline-none text-2xl -translate-y-1/8"/>
+                <div className="flex justify-between items-center py-5 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
+                ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2">
+                    <CiSearch className="text-white text-2xl"/>
+                    <input className="text-white px-3 focus:outline-0" placeholder="Search by adderess city or neighborhood" title="Search by adderess city or neighborhood"/>
                     <div className="w-full max-w-[80px]">
-                        <Link href="">
-                            <Button className="w-full !h-[30px] font-poppins text-base cursor-pointer 
+                        <Button className="w-full !h-[30px] font-poppins text-base cursor-pointer 
                             hover:scale-105 hover:shadow-lg">Search</Button>
-                        </Link>
                     </div>
                 </div>
 
@@ -340,7 +340,7 @@ export default function Dashboard() {
             {
                 account && (
                     <div className="absolute top-25 right-20 w-full max-w-[250px] h-[350px] 
-                    flex flex-col gap-4 bg-[#FFFFFF]">
+                    flex flex-col gap-4 bg-[#FFFFFF] px-5">
                         <div className="w-full pt-6">
                             <Link href="/account-settings">
                                 <Button className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
