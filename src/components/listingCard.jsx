@@ -2,14 +2,14 @@ import Image from "next/image";
 
 export default function ListingCard({ imageName, title }) {
     return (
-        <div className="h-[200px] lg:h-[300px] border-2">
-            <div className="w-full h-[60%] relative">
-                <Image src={`/${imageName}.png`} alt="photo" fill />
+        <div className=" w-[308px]">
+            <div className="">
+                <Image src={`/Image/management/${imageName}.png`} alt="photo" height={400} width={400} className="w-full h-[200px]"/>
             </div>
-            <div className="w-full h-[40%] flex flex-col items-center justify-center
-            text-center">
-                <h1 className="text-[#000000] font-poppins font-bold text-2xl">{title}</h1>
-                <p className="text-[#8F8C8C] font-poppins">Last Scraped: 2023-11-15 10:00 am</p>
+            <div className="w-full flex flex-col items-center justify-center
+            text-center  min-h-32 border-2 border-t-0 border-gray-600 py-5">
+                <h1 className="text-[#000000] font-poppins font-bold text-5xl">{title}</h1>
+                <p className="text-[#8F8C8C] font-poppins text-2xl mt-3">Last Scraped: 2023-11-15 10:00 am</p>
             </div>
         </div>
     );

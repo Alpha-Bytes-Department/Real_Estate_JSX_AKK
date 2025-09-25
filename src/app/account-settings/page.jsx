@@ -23,12 +23,10 @@ export default function AccountSettings() {
                             hover:bg-[#D9D9D9]">
                                 <Label htmlFor="profile-settings" className="text-[#000000] font-poppins 
                                 cursor-pointer text-base">Profile Settings</Label>
-                                <Image src="/user-logo.svg" alt="user-logo" height={15} width={20}
-                                    className="" />
+                                <Image src="/user-logo.svg" alt="user-logo" height={15} width={20} className=""/>
                             </Button>
                         </Link>
                     </div>
-
                     <div className="w-full">
                         <Link href="/saved-properties">
                             <Button className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
@@ -64,7 +62,6 @@ export default function AccountSettings() {
                             </Button>
                         </Link>
                     </div>
-
                     <div className="w-full">
                         <Link href="">
                             <Button className="w-full flex items-center justify-center cursor-pointer 
