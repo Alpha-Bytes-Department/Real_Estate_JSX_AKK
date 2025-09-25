@@ -157,7 +157,7 @@ export default function SignUp() {
                     </div>
 
                     <div className="flex items-start gap-3 mt-4">
-                        <Checkbox id="terms-and-policy" checked={agreeToTerms}
+                        <Checkbox id="terms-and-policy" checked={watchAgreeToTerms}
                             onCheckedChange={(checked) => setValue("agreeToTerms", checked)}
                         />
                         <Label htmlFor="terms-and-policy" className="text-[#000000] font-poppins">
