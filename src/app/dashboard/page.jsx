@@ -59,7 +59,7 @@ export default function Dashboard() {
 
       propertyType: "all",
 
-      zonedUnits: [13, 10, 12, 34, 70],
+      zonedUnits: [13, 70],
       listPrice: [33, 90],
       existingPotential: [47, 92],
       daysOnMarket: [27, 114],
