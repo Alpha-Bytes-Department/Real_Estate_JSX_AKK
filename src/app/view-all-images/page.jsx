@@ -1,18 +1,26 @@
+'use client'
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 
 export default function ViewAllImage() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-8">
-            <Image src="/HomePageLogo.svg" alt="home-page-logo" height={100} width={200} />
-            
-            <Image src="/Image/properitse/home_pic_1.jpg" alt="home_pic_1" height={200} width={400} />
-            <Image src="/Image/properitse/home_pic_2.jpg" alt="home_pic_2" height={200} width={400} />
-
-            <Link href="/property-details">
-                <button className="bg-[#000000] text-[#FFFFFF] font-poppins px-6 py-2 rounded-md
-            cursor-pointer">Back</button>
-            </Link>
+        <div className="flex flex-wrap gap-3">
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={100} width={800} className="h-full w-full"/>
+            <Image src={"/Image/view-all-IMAges/view-all-square-1.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-square-1.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-image-vertical.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={300} width={800} />
+            <Image src={"/Image/view-all-IMAges/view-all-1-horizontal.jpg"} alt="1" height={300} width={800} />
         </div>
     );
 }
+
+
