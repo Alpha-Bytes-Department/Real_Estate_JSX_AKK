@@ -13,11 +13,17 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { CiSearch } from "react-icons/ci";
 import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
+import AccountPopUP from "@/myComponents/AccountPopUp/AccountPopUP";
+import ZoningPopUp from "@/myComponents/ZoningPopUp/ZoningPopUp";
 
 export default function Dashboard() {
   const [account, setAccount] = useState(false);
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
+  
+  // Add mounting states for proper animation
+  const [smallPopUpMounted, setSmallPopUpMounted] = useState(false);
+  const [bigPopUpMounted, setBigPopUpMounted] = useState(false);
 
   function handleAccount() {
     setAccount(!account);
@@ -194,89 +200,6 @@ export default function Dashboard() {
     },
   ]);
 
-  // const [properties, setProperties] = useState([
-  //   {
-  //     id: 1,
-  //     position: { lat: 40.4406, lng: -79.9959 },
-  //     price: "$199,999",
-  //     details: "3 beds | 2 bathrooms | 2611 sqft - House for sale",
-  //     address: "6515 Belair Road (MDFS35424512)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 2,
-  //     position: { lat: 40.4450, lng: -79.9900 },
-  //     price: "$225,000",
-  //     details: "4 beds | 3 bathrooms | 2800 sqft - House for sale",
-  //     address: "1234 Main Street (MDFS35424513)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 3,
-  //     position: { lat: 40.4350, lng: -80.0050 },
-  //     price: "$180,000",
-  //     details: "2 beds | 1 bathroom | 1800 sqft - House for sale",
-  //     address: "5678 Oak Avenue (MDFS35424514)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 4,
-  //     position: { lat: 40.4380, lng: -79.9920 },
-  //     price: "$275,000",
-  //     details: "5 beds | 3 bathrooms | 3200 sqft - House for sale",
-  //     address: "789 Pine Street (MDFS35424515)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 5,
-  //     position: { lat: 40.4420, lng: -79.9980 },
-  //     price: "$195,000",
-  //     details: "3 beds | 2 bathrooms | 2100 sqft - House for sale",
-  //     address: "321 Elm Road (MDFS35424516)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 6,
-  //     position: { lat: 40.4320, lng: -79.9940 },
-  //     price: "$310,000",
-  //     details: "4 beds | 3.5 bathrooms | 3500 sqft - House for sale",
-  //     address: "456 Maple Avenue (MDFS35424517)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 7,
-  //     position: { lat: 40.4470, lng: -79.9930 },
-  //     price: "$245,000",
-  //     details: "3 beds | 2.5 bathrooms | 2800 sqft - House for sale",
-  //     address: "890 Cedar Lane (MDFS35424518)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 8,
-  //     position: { lat: 40.4390, lng: -80.0020 },
-  //     price: "$289,000",
-  //     details: "4 beds | 3 bathrooms | 3100 sqft - House for sale",
-  //     address: "123 Birch Street (MDFS35424519)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 9,
-  //     position: { lat: 40.4440, lng: -79.9870 },
-  //     price: "$335,000",
-  //     details: "5 beds | 4 bathrooms | 3800 sqft - House for sale",
-  //     address: "567 Willow Way (MDFS35424520)",
-  //     image: "/saved-properties-1.jpg"
-  //   },
-  //   {
-  //     id: 10,
-  //     position: { lat: 40.4360, lng: -79.9990 },
-  //     price: "$229,000",
-  //     details: "3 beds | 2 bathrooms | 2400 sqft - House for sale",
-  //     address: "432 Aspen Court (MDFS35424521)",
-  //     image: "/saved-properties-1.jpg"
-  //   }
-  // ]);
-
   const [selectedProperty, setSelectedProperty] = useState(null);
 
   const { handleSubmit, control } = useForm({
@@ -285,15 +208,12 @@ export default function Dashboard() {
       reviewed: false,
       exclusionZones: false,
       showAlertMap: false,
-
       missingData: false,
       favorites: false,
       businessRuleMatches: false,
       newlyListed: false,
       normalListings: false,
-
       propertyType: "all",
-
       zonedUnits: [13, 70],
       listPrice: [33, 90],
       existingPotential: [47, 92],
@@ -303,23 +223,57 @@ export default function Dashboard() {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    setZoningMapClicked(false);
   };
 
-  // closing popup if click outside
-  const popupRef = useRef(null);
+  // Functions to handle popup opening and closing with proper animation timing
+  const openSmallPopUp = () => {
+    setSmallPopUpMounted(true);
+    // Use requestAnimationFrame to ensure DOM is updated before animation
+    requestAnimationFrame(() => {
+      setSmallPopUp(true);
+    });
+  };
 
+  const closeSmallPopUp = () => {
+    setSmallPopUp(false);
+    // Wait for animation to complete before unmounting
+    setTimeout(() => {
+      setSmallPopUpMounted(false);
+    }, 300); // Match the transition duration
+  };
+
+  const openBigPopUp = () => {
+    setSelectedProperty(null); // Close info window when opening big popup
+    setSelectedProperty(selectedProperty); // Reopen with current property
+    setBigPopUpMounted(true);
+    requestAnimationFrame(() => {
+      setBigPopUp(true);
+    });
+  };
+
+  const closeBigPopUp = () => {
+    setBigPopUp(false);
+    setTimeout(() => {
+      setBigPopUpMounted(false);
+    }, 300);
+  };
+
+  // Refs for click outside detection
+  const smallpopupRef = useRef(null);
+  const bigpopupRef = useRef(null);
+
+  // Click outside and ESC key handlers for small popup
   useEffect(() => {
-    if (!bigPopUp) return;
+    if (!smallPopUp) return;
 
     function handleSideClick(e) {
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
-        setBigPopUp(false);
+      if (smallpopupRef.current && !smallpopupRef.current.contains(e.target)) {
+        closeSmallPopUp();
       }
     }
 
     function handleESC(e) {
-      if (e.key === "Escape") setBigPopUp(false);
+      if (e.key === "Escape") closeSmallPopUp();
     }
 
     document.addEventListener("mousedown", handleSideClick);
@@ -331,7 +285,32 @@ export default function Dashboard() {
       document.removeEventListener("touchstart", handleSideClick);
       document.removeEventListener("keydown", handleESC);
     };
-  }, [bigPopUp, setBigPopUp]);
+  }, [smallPopUp]);
+
+  // Click outside and ESC key handlers for big popup
+  useEffect(() => {
+    if (!bigPopUp) return;
+
+    function handleSideClick(e) {
+      if (bigpopupRef.current && !bigpopupRef.current.contains(e.target)) {
+        closeBigPopUp();
+      }
+    }
+
+    function handleESC(e) {
+      if (e.key === "Escape") closeBigPopUp();
+    }
+
+    document.addEventListener("mousedown", handleSideClick);
+    document.addEventListener("touchstart", handleSideClick);
+    document.addEventListener("keydown", handleESC);
+
+    return () => {
+      document.removeEventListener("mousedown", handleSideClick);
+      document.removeEventListener("touchstart", handleSideClick);
+      document.removeEventListener("keydown", handleESC);
+    };
+  }, [bigPopUp]);
 
   // main component
   return (
@@ -418,7 +397,7 @@ export default function Dashboard() {
                 onCloseClick={() => setSelectedProperty(null)}
               >
                 <div
-                  onClick={() => setBigPopUp(true)}
+                  onClick={openBigPopUp}
                   className="w-full max-w-[250px] h-[250px] cursor-pointer"
                 >
                   <div className="w-full h-[60%] relative">
@@ -503,13 +482,13 @@ export default function Dashboard() {
               Saved Properties
             </button>
           </Link>
-            <button 
-              onClick={()=>setSmallPopUp(true)}
-              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
-                cursor-pointer"
-            >
-              Zoning map
-            </button>
+          <button 
+            onClick={openSmallPopUp}
+            className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+              cursor-pointer"
+          >
+            Zoning map
+          </button>
           <Link href="/listings">
             <button
               className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
@@ -521,148 +500,39 @@ export default function Dashboard() {
         </div>
 
         {account && (
-          <div
-            className="absolute top-16 right-8 w-full max-w-[250px] pb-5 rounded-md
-                    flex flex-col gap-4 bg-[#FFFFFF] px-5 shadow-lg z-50"
-          >
-            <div className="w-full pt-6">
-              <Link href="/account-settings">
-                <Button
-                  className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
-                            hover:bg-[#D9D9D9]"
-                >
-                  <Label
-                    htmlFor="profile-settings"
-                    className="text-[#000000] font-poppins 
-                                cursor-pointer text-base"
-                  >
-                    Profile Settings
-                  </Label>
-                  <Image
-                    src="/user-logo.svg"
-                    alt="user-logo"
-                    height={15}
-                    width={20}
-                    className=""
-                  />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="w-full">
-              <Link href="/saved-properties">
-                <Button
-                  className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
-                            hover:bg-[#D9D9D9]"
-                >
-                  <Label
-                    htmlFor="profile-settings"
-                    className="text-[#000000] 
-                                    font-poppins cursor-pointer text-base"
-                  >
-                    Saved Properties
-                  </Label>
-                  <Image
-                    src="/bookmark.svg"
-                    alt="bookmark-logo"
-                    height={15}
-                    width={20}
-                    className=""
-                  />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="w-full">
-              <Link href="/listings">
-                <Button
-                  className="w-full flex justify-between cursor-pointer bg-[#D9D9D9] 
-                            hover:bg-[#D9D9D9]"
-                >
-                  <Label
-                    htmlFor="listings"
-                    className="text-[#000000] font-poppins 
-                                cursor-pointer text-base"
-                  >
-                    Listings
-                  </Label>
-                  <Image
-                    src="/list.svg"
-                    alt="list-logo"
-                    height={15}
-                    width={20}
-                    className=""
-                  />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="w-full flex items-center gap-2 pl-4">
-              <div className="w-full max-w-[80px] h-[1px] bg-[#8F8C8C]" />
-              <p className="text-[#A4A3A3] font-poppins">and</p>
-              <div className="w-full max-w-[80px] h-[1px] bg-[#8F8C8C]" />
-            </div>
-
-            <div className="w-full">
-              <Button
-                className="w-full flex items-center justify-center 
-                                    cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]"
-              >
-                <Label
-                  htmlFor="privacy-policy"
-                  className="text-[#000000] 
-                                        font-poppins cursor-pointer text-base"
-                >
-                  Privacy Policy
-                </Label>
-              </Button>
-            </div>
-
-            <div className="w-full">
-              <Button
-                className="w-full flex items-center justify-center 
-                                    cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]"
-              >
-                <Label
-                  htmlFor="terms-of-services"
-                  className="text-[#000000] 
-                                        font-poppins cursor-pointer text-base"
-                >
-                  Terms of Services
-                </Label>
-              </Button>
-            </div>
-            <div className="w-full">
-              <Button
-                className="w-full flex items-center justify-center 
-                                    cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]"
-              >
-                <Label
-                  htmlFor="logout"
-                  className="text-[#000000] 
-                                        font-poppins cursor-pointer text-base"
-                >
-                  Logout
-                </Label>
-              </Button>
-            </div>
-          </div>
+          <AccountPopUP/>
         )}
       </div>
-
-      {bigPopUp && (
-        <div
-          ref={popupRef}
-          className={`${
-            bigPopUp
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-95 pointer-events-none"
-          }
-        fixed inset-0 z-50 flex items-center justify-center bg-black/70
-        transition-all duration-300 ease-out transform`}
+      
+      {/* Small Popup with proper animation */}
+      {smallPopUpMounted && (
+        <div 
+          ref={smallpopupRef} 
+          className={`fixed bottom-20 left-2/4 transform -translate-x-1/2 z-50
+            transition-all duration-300 ease-out ${
+            smallPopUp 
+              ? "opacity-100 scale-100 translate-y-0" 
+              : "opacity-0 scale-95 translate-y-2"
+          }`}
         >
-          <div className="bg-white rounded-lg max-w-7xl max-h-[90vh] overflow-auto m-4">
-            <PropertyPopUP setBigPopUp={setBigPopUp} />
+          <ZoningPopUp />
+        </div>
+      )}
+
+      {/* Big Popup with proper animation */}
+      {bigPopUpMounted && (
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/70
+            transition-all  `}
+        >
+          <div 
+            ref={bigpopupRef} 
+            className={`bg-white rounded-lg max-w-7xl max-h-[90vh] overflow-auto m-4
+              transition-transform duration-300 ease-out ${
+              bigPopUp ? "scale-100" : "scale-95"
+            }`}
+          >
+            <PropertyPopUP setBigPopUp={closeBigPopUp} />
           </div>
         </div>
       )}
