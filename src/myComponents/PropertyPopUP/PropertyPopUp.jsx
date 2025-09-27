@@ -63,7 +63,7 @@ export default function PropertyPopUP({setBigPopUp}) {
     }
 
     return (
-        <div className="p-3 lg:p-8 mx-40">
+        <div className="p-3 lg:p-8 mx-10">
             <div className="sticky top-0 z-50 bg-white py-5">
                 <div className="w-1/2 flex justify-between">
                     <div className="flex">
