@@ -7,9 +7,9 @@ export default function SavedProperties() {
   return (
     <div className="p-9 w-full max-w-[1300px] mx-auto">
       <div className="flex">
-        <ChevronLeft />
-        <Link href="/dashboard" className="font-poppins text-[#3F3C3C]">
-          Back to search
+        <Link href="/dashboard" className="font-poppins px-3 py-2 rounded-lg flex justify-between bg-black text-white ">
+          <ChevronLeft />
+          <p>Back to search</p>
         </Link>
       </div>
 

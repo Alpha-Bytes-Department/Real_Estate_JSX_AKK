@@ -7,43 +7,277 @@ import {
 } from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { Slider } from "@/components/ui/slider";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CiSearch } from "react-icons/ci";
-import PropertyDetails from "../property-details/page";
 import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
 
 export default function Dashboard() {
-  const [zoningMapClicked, setZoningMapClicked] = useState(false);
   const [account, setAccount] = useState(false);
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
-
-  function zoningPopUpShow() {
-    setZoningMapClicked(true);
-  }
 
   function handleAccount() {
     setAccount(!account);
   }
 
-  const [markerLocation, setMarkerLocation] = useState({
+  // Center point for the map
+  const [mapCenter, setMapCenter] = useState({
     lat: 40.4406,
     lng: -79.9959,
   });
+
+  // Multiple properties with their locations
+  const [properties, setProperties] = useState([
+    {
+      id: 1,
+      position: { lat: 40.4406, lng: -79.9959 },
+      price: "$199,999",
+      details: "3 beds | 2 bathrooms | 2611 sqft - House for sale",
+      address: "6515 Belair Road (MDFS35424512)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 2,
+      position: { lat: 40.445, lng: -79.99 },
+      price: "$225,000",
+      details: "4 beds | 3 bathrooms | 2800 sqft - House for sale",
+      address: "1234 Main Street (MDFS35424513)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 3,
+      position: { lat: 40.435, lng: -80.005 },
+      price: "$180,000",
+      details: "2 beds | 1 bathroom | 1800 sqft - House for sale",
+      address: "5678 Oak Avenue (MDFS35424514)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 4,
+      position: { lat: 40.438, lng: -79.992 },
+      price: "$275,000",
+      details: "5 beds | 3 bathrooms | 3200 sqft - House for sale",
+      address: "789 Pine Street (MDFS35424515)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 5,
+      position: { lat: 40.442, lng: -79.998 },
+      price: "$195,000",
+      details: "3 beds | 2 bathrooms | 2100 sqft - House for sale",
+      address: "321 Elm Road (MDFS35424516)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 6,
+      position: { lat: 40.432, lng: -79.994 },
+      price: "$310,000",
+      details: "4 beds | 3.5 bathrooms | 3500 sqft - House for sale",
+      address: "456 Maple Avenue (MDFS35424517)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 7,
+      position: { lat: 40.447, lng: -79.993 },
+      price: "$245,000",
+      details: "3 beds | 2.5 bathrooms | 2800 sqft - House for sale",
+      address: "890 Cedar Lane (MDFS35424518)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 8,
+      position: { lat: 40.439, lng: -80.002 },
+      price: "$289,000",
+      details: "4 beds | 3 bathrooms | 3100 sqft - House for sale",
+      address: "123 Birch Street (MDFS35424519)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 9,
+      position: { lat: 40.444, lng: -79.987 },
+      price: "$335,000",
+      details: "5 beds | 4 bathrooms | 3800 sqft - House for sale",
+      address: "567 Willow Way (MDFS35424520)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 10,
+      position: { lat: 40.436, lng: -79.999 },
+      price: "$229,000",
+      details: "3 beds | 2 bathrooms | 2400 sqft - House for sale",
+      address: "432 Aspen Court (MDFS35424521)",
+      image: "/saved-properties-1.jpg",
+    },
+    // 10 new items
+    {
+      id: 11,
+      position: { lat: 40.441, lng: -79.985 },
+      price: "$210,000",
+      details: "3 beds | 2 bathrooms | 2500 sqft - House for sale",
+      address: "1010 Cherry Lane (MDFS35424522)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 12,
+      position: { lat: 40.437, lng: -79.991 },
+      price: "$265,000",
+      details: "4 beds | 3 bathrooms | 3000 sqft - House for sale",
+      address: "2020 Spruce Street (MDFS35424523)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 13,
+      position: { lat: 40.434, lng: -79.988 },
+      price: "$190,000",
+      details: "2 beds | 2 bathrooms | 2000 sqft - House for sale",
+      address: "3030 Walnut Avenue (MDFS35424524)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 14,
+      position: { lat: 40.446, lng: -79.996 },
+      price: "$320,000",
+      details: "5 beds | 4 bathrooms | 3600 sqft - House for sale",
+      address: "4040 Pinecrest Road (MDFS35424525)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 15,
+      position: { lat: 40.443, lng: -79.989 },
+      price: "$230,000",
+      details: "3 beds | 2 bathrooms | 2600 sqft - House for sale",
+      address: "5050 Magnolia Blvd (MDFS35424526)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 16,
+      position: { lat: 40.431, lng: -79.997 },
+      price: "$280,000",
+      details: "4 beds | 3 bathrooms | 3200 sqft - House for sale",
+      address: "6060 Oakwood Street (MDFS35424527)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 17,
+      position: { lat: 40.448, lng: -79.99 },
+      price: "$245,000",
+      details: "3 beds | 2.5 bathrooms | 2800 sqft - House for sale",
+      address: "7070 Maple Lane (MDFS35424528)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 18,
+      position: { lat: 40.44, lng: -80.001 },
+      price: "$300,000",
+      details: "4 beds | 3 bathrooms | 3400 sqft - House for sale",
+      address: "8080 Cedar Street (MDFS35424529)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 19,
+      position: { lat: 40.4355, lng: -79.9935 },
+      price: "$220,000",
+      details: "3 beds | 2 bathrooms | 2400 sqft - House for sale",
+      address: "9090 Birch Avenue (MDFS35424530)",
+      image: "/saved-properties-1.jpg",
+    },
+    {
+      id: 20,
+      position: { lat: 40.4425, lng: -79.9865 },
+      price: "$350,000",
+      details: "5 beds | 4 bathrooms | 4000 sqft - House for sale",
+      address: "10101 Willow Drive (MDFS35424531)",
+      image: "/saved-properties-1.jpg",
+    },
+  ]);
+
+  // const [properties, setProperties] = useState([
+  //   {
+  //     id: 1,
+  //     position: { lat: 40.4406, lng: -79.9959 },
+  //     price: "$199,999",
+  //     details: "3 beds | 2 bathrooms | 2611 sqft - House for sale",
+  //     address: "6515 Belair Road (MDFS35424512)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 2,
+  //     position: { lat: 40.4450, lng: -79.9900 },
+  //     price: "$225,000",
+  //     details: "4 beds | 3 bathrooms | 2800 sqft - House for sale",
+  //     address: "1234 Main Street (MDFS35424513)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 3,
+  //     position: { lat: 40.4350, lng: -80.0050 },
+  //     price: "$180,000",
+  //     details: "2 beds | 1 bathroom | 1800 sqft - House for sale",
+  //     address: "5678 Oak Avenue (MDFS35424514)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 4,
+  //     position: { lat: 40.4380, lng: -79.9920 },
+  //     price: "$275,000",
+  //     details: "5 beds | 3 bathrooms | 3200 sqft - House for sale",
+  //     address: "789 Pine Street (MDFS35424515)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 5,
+  //     position: { lat: 40.4420, lng: -79.9980 },
+  //     price: "$195,000",
+  //     details: "3 beds | 2 bathrooms | 2100 sqft - House for sale",
+  //     address: "321 Elm Road (MDFS35424516)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 6,
+  //     position: { lat: 40.4320, lng: -79.9940 },
+  //     price: "$310,000",
+  //     details: "4 beds | 3.5 bathrooms | 3500 sqft - House for sale",
+  //     address: "456 Maple Avenue (MDFS35424517)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 7,
+  //     position: { lat: 40.4470, lng: -79.9930 },
+  //     price: "$245,000",
+  //     details: "3 beds | 2.5 bathrooms | 2800 sqft - House for sale",
+  //     address: "890 Cedar Lane (MDFS35424518)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 8,
+  //     position: { lat: 40.4390, lng: -80.0020 },
+  //     price: "$289,000",
+  //     details: "4 beds | 3 bathrooms | 3100 sqft - House for sale",
+  //     address: "123 Birch Street (MDFS35424519)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 9,
+  //     position: { lat: 40.4440, lng: -79.9870 },
+  //     price: "$335,000",
+  //     details: "5 beds | 4 bathrooms | 3800 sqft - House for sale",
+  //     address: "567 Willow Way (MDFS35424520)",
+  //     image: "/saved-properties-1.jpg"
+  //   },
+  //   {
+  //     id: 10,
+  //     position: { lat: 40.4360, lng: -79.9990 },
+  //     price: "$229,000",
+  //     details: "3 beds | 2 bathrooms | 2400 sqft - House for sale",
+  //     address: "432 Aspen Court (MDFS35424521)",
+  //     image: "/saved-properties-1.jpg"
+  //   }
+  // ]);
+
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
@@ -73,7 +307,6 @@ export default function Dashboard() {
   };
 
   // closing popup if click outside
-
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -104,48 +337,109 @@ export default function Dashboard() {
   return (
     <div>
       <div className="w-full h-screen fixed">
-        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
+        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
           <Map
             style={{ borderRadius: "20px" }}
             defaultZoom={13}
-            defaultCenter={markerLocation}
+            defaultCenter={mapCenter}
             gestureHandling={"greedy"}
             disableDefaultUI
           >
-            <Marker
-              position={markerLocation}
-              onClick={() => setSmallPopUp(true)}
-            />
-            {smallPopUp && (
+            {/* Render property markers as price tags */}
+            {properties.map((property) => {
+              // Convert price to K format
+              const priceNum = parseInt(property.price.replace(/\$|,/g, ""));
+              const priceK =
+                priceNum >= 1000000
+                  ? `$${(priceNum / 1000000).toFixed(1)}M`
+                  : `$${Math.round(priceNum / 1000)}K`;
+
+              return (
+                <Marker
+                  key={property.id}
+                  position={property.position}
+                  onClick={() => setSelectedProperty(property)}
+                >
+                  {/* wrapper ensures the marker bottom-center anchors at the position */}
+                  <div
+                    onClick={() => setSelectedProperty(property)}
+                    // Tailwind classes kept; inline styles guarantee layout/visibility
+                    className="cursor-pointer transition-colors"
+                    style={{
+                      position: "relative", // overlay positioning context
+                      transform: "translate(-50%, -100%)", // anchor bottom-center
+                      left: "50%", // center horizontally relative to overlay anchoring
+                      top: "100%", // move above the anchor point
+                      zIndex: 9999, // ensure above map elements
+                      pointerEvents: "auto", // allow hover/click
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      className="bg-[#00308F] px-3 py-1 rounded-md shadow-md hover:bg-[#002266] transition-colors"
+                      style={{
+                        // inline fallbacks in case Tailwind utilities don't apply
+                        background: "#00308F",
+                        padding: "4px 12px",
+                        borderRadius: "8px",
+                        boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+                        color: "white",
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                        transformOrigin: "center bottom",
+                      }}
+                    >
+                      <span className="text-white font-semibold font-poppins text-sm">
+                        {priceK}
+                      </span>
+                    </div>
+
+                    {/* optional drop pin triangle so it reads like a map pin */}
+                    <div
+                      style={{
+                        width: 0,
+                        height: 0,
+                        borderLeft: "6px solid transparent",
+                        borderRight: "6px solid transparent",
+                        borderTop: "8px solid #00308F",
+                        marginTop: -1,
+                      }}
+                    />
+                  </div>
+                </Marker>
+              );
+            })}
+
+            {/* Info window for selected property */}
+            {selectedProperty && (
               <InfoWindow
-                position={markerLocation}
-                onCloseClick={() => setSmallPopUp(false)}
+                position={selectedProperty.position}
+                onCloseClick={() => setSelectedProperty(null)}
               >
-                <div className="w-full max-w-[250px] h-[250px]">
+                <div
+                  onClick={() => setBigPopUp(true)}
+                  className="w-full max-w-[250px] h-[250px] cursor-pointer"
+                >
                   <div className="w-full h-[60%] relative">
                     <Image
-                      src="/saved-properties-1.jpg"
-                      alt="pop-up-house"
+                      src={selectedProperty.image}
+                      alt="property-image"
                       fill
+                      className="object-cover"
                     />
                   </div>
                   <div className="w-full h-[40%] ">
                     <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                      $199,999
+                      {selectedProperty.price}
                     </h1>
                     <p className="font-poppins text-[#000000]">
-                      3 beds | 2 bathrooms | 2611 sqft - House for sale
+                      {selectedProperty.details}
                     </p>
                     <p className="font-poppins text-[#000000]">
-                      6515 Belair Road (MDFS35424512)
+                      {selectedProperty.address}
                     </p>
                   </div>
-                  <button
-                    onClick={() => setBigPopUp(!bigPopUp)}
-                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded"
-                  >
-                    View Details
-                  </button>
                 </div>
               </InfoWindow>
             )}
@@ -203,246 +497,33 @@ export default function Dashboard() {
         <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
           <Link href="/saved-properties">
             <button
-              className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-2 py-2 
-                cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
+              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+                cursor-pointer"
             >
               Saved Properties
             </button>
           </Link>
-          <button
-            className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-2 py-2
-                cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
-            onClick={zoningPopUpShow}
-          >
-            Zoning Map
-          </button>
+            <button 
+              onClick={()=>setSmallPopUp(true)}
+              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+                cursor-pointer"
+            >
+              Zoning map
+            </button>
           <Link href="/listings">
             <button
-              className="bg-[#ECECEC] text-[#000000] rounded-md font-poppins px-2 py-2
-                cursor-pointer focus:bg-[#000000] focus:text-[#FFFFFF]"
+              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+                cursor-pointer"
             >
               Listings
             </button>
           </Link>
         </div>
 
-        {zoningMapClicked && (
-          <Dialog open={zoningMapClicked} onOpenChange={setZoningMapClicked}>
-            <DialogContent className="bg-transparent border-none p-2 w-full max-w-[1800px]">
-              <DialogHeader>
-                <DialogTitle></DialogTitle>
-                <DialogDescription></DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmit)} className="">
-                <div className="bg-white flex gap-5 px-5 py-5  rounded-full ">
-                  {[
-                    {
-                      name: "soldListings",
-                      label: "Sold Listings",
-                      id: "sold-listings",
-                    },
-                    { name: "reviewed", label: "Reviewed", id: "reviewed" },
-                    {
-                      name: "exclusionZones",
-                      label: "Exclusion Zones",
-                      id: "exclusion-zones",
-                    },
-                    {
-                      name: "showAlertMap",
-                      label: "Show Alert Map",
-                      id: "show-alert-map",
-                    },
-                  ].map((fieldData) => (
-                    <Controller
-                      key={fieldData.name}
-                      name={fieldData.name}
-                      control={control}
-                      render={({ field }) => (
-                        <div className="flex items-center gap-2">
-                          <Checkbox
-                            id={fieldData.id}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="border-black h-5 w-5 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700"
-                          />
-                          <Label htmlFor={fieldData.id}>
-                            {fieldData.label}
-                          </Label>
-                        </div>
-                      )}
-                    />
-                  ))}
-                </div>
-
-                <div className="bg-white mt-6 px-8 py-3 ">
-                  <div className="grid grid-cols-3 lg:grid-cols-5 gap-3 text-black-600">
-                    {[
-                      {
-                        name: "missingData",
-                        label: "Missing Data",
-                        id: "missing-data",
-                      },
-                      {
-                        name: "favorites",
-                        label: "Favorites",
-                        id: "favorites",
-                      },
-                      {
-                        name: "businessRuleMatches",
-                        label: "Business Rule Matches",
-                        id: "business-rule-matches",
-                      },
-                      {
-                        name: "newlyListed",
-                        label: "Newly Listed",
-                        id: "newly-listed",
-                      },
-                      {
-                        name: "normalListings",
-                        label: "Normal Listings",
-                        id: "normal-listings",
-                      },
-                    ].map((fieldData) => (
-                      <Controller
-                        key={fieldData.name}
-                        name={fieldData.name}
-                        control={control}
-                        render={({ field }) => (
-                          <div className="flex items-center gap-2">
-                            <Checkbox
-                              id={fieldData.id}
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                            <Label htmlFor={fieldData.id}>
-                              {fieldData.label}
-                            </Label>
-                          </div>
-                        )}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="mt-6">
-                    <Controller
-                      control={control}
-                      name="propertyType"
-                      render={({ field }) => (
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          className="grid grid-cols-2 lg:grid-cols-4"
-                        >
-                          <h1 className="font-semibold">Property Type: </h1>
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="all" id="r1" />
-                            <Label htmlFor="r1">All</Label>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="multi-family" id="r2" />
-                            <Label htmlFor="r2">Multi-Family</Label>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="land" id="r3" />
-                            <Label htmlFor="r3">Land</Label>
-                          </div>
-                        </RadioGroup>
-                      )}
-                    />
-                  </div>
-
-                  <div
-                    className="flex flex-col items-center justify-center gap-5  
-                                mt-6 pt-2 pb-4 bg-[#F5F5F5]"
-                  >
-                    <p className="text-[#000000]">Zoned Units</p>
-                    <Controller
-                      control={control}
-                      name="zonedUnits"
-                      render={({ field }) => (
-                        <Slider
-                          defaultValue={field.value}
-                          max={100}
-                          step={1}
-                          onValueChange={field.onChange}
-                        />
-                      )}
-                    />
-
-                    <p className="text-[#000000]">List Price</p>
-                    <Controller
-                      control={control}
-                      name="listPrice"
-                      render={({ field }) => (
-                        <Slider
-                          defaultValue={field.value}
-                          max={100}
-                          step={1}
-                          onValueChange={field.onChange}
-                        />
-                      )}
-                    />
-
-                    <p className="text-[#000000]">
-                      Existing Potential $ Per Unit
-                    </p>
-                    <Controller
-                      control={control}
-                      name="existingPotential"
-                      render={({ field }) => (
-                        <Slider
-                          defaultValue={field.value}
-                          max={100}
-                          step={1}
-                          onValueChange={field.onChange}
-                        />
-                      )}
-                    />
-
-                    <p className="text-[#000000]">Days on Market</p>
-                    <Controller
-                      control={control}
-                      name="daysOnMarket"
-                      render={({ field }) => (
-                        <Slider
-                          defaultValue={field.value}
-                          max={100}
-                          step={1}
-                          onValueChange={field.onChange}
-                        />
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-5 mt-4">
-                    <Button
-                      type="button"
-                      className="bg-[#FFFFFF] text-[#000000]
-                                ring-2 ring-[#000000] hover:bg-[#FFFFFF] focus:text-[#FFFFFF] 
-                                focus:bg-[#000000] font-poppins cursor-pointer"
-                      onClick={() => setZoningMapClicked(false)}
-                    >
-                      Clear
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-[#FFFFFF] text-[#000000]
-                                ring-2 ring-[#000000] hover:bg-[#FFFFFF] focus:text-[#FFFFFF] 
-                                focus:bg-[#000000] font-poppins cursor-pointer"
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
-        )}
-
         {account && (
           <div
-            className="absolute top-25 right-20 w-full max-w-[250px] pb-5 rounded-md
-                    flex flex-col gap-4 bg-[#FFFFFF] px-5"
+            className="absolute top-16 right-8 w-full max-w-[250px] pb-5 rounded-md
+                    flex flex-col gap-4 bg-[#FFFFFF] px-5 shadow-lg z-50"
           >
             <div className="w-full pt-6">
               <Link href="/account-settings">
@@ -557,7 +638,7 @@ export default function Dashboard() {
                                     cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]"
               >
                 <Label
-                  htmlFor="terms-of-services"
+                  htmlFor="logout"
                   className="text-[#000000] 
                                         font-poppins cursor-pointer text-base"
                 >
@@ -568,18 +649,23 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-      <div
-        ref={popupRef}
-        className={`${
-          bigPopUp
-            ? "opacity-100 scale-100"
-            : "opacity-0 scale-95 pointer-events-none"
-        }
-    absolute top-32 left-[8%] right-[8%] z-50 bg-white
-    transition-all duration-300 ease-out transform`}
-      >
-        <PropertyPopUP setBigPopUp={setBigPopUp} />
-      </div>
+
+      {bigPopUp && (
+        <div
+          ref={popupRef}
+          className={`${
+            bigPopUp
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
+          }
+        fixed inset-0 z-50 flex items-center justify-center bg-black/70
+        transition-all duration-300 ease-out transform`}
+        >
+          <div className="bg-white rounded-lg max-w-7xl max-h-[90vh] overflow-auto m-4">
+            <PropertyPopUP setBigPopUp={setBigPopUp} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
