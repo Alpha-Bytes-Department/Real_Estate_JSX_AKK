@@ -9,7 +9,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { CiSearch } from "react-icons/ci";
 import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
@@ -476,7 +475,7 @@ export default function Dashboard() {
         <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
           <Link href="/saved-properties">
             <button
-              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
                 cursor-pointer"
             >
               Saved Properties
@@ -484,14 +483,14 @@ export default function Dashboard() {
           </Link>
           <button 
             onClick={openSmallPopUp}
-            className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+            className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
               cursor-pointer"
           >
             Zoning map
           </button>
           <Link href="/listings">
             <button
-              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-5 py-2 
+              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
                 cursor-pointer"
             >
               Listings

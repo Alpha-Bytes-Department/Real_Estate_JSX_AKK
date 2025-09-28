@@ -5,13 +5,11 @@ import Link from "next/link";
 
 export default function Listings() {
   return (
-    <div className="mx-40 my-10 relative">
-      <div className="flex">
+    <div className="mx-10 lg:mx-40 my-10 relative">
+      <Link href="/dashboard" className="flex font-poppins text-[#3F3C3C]">
         <ChevronLeft />
-        <Link href="/dashboard" className="font-poppins text-[#3F3C3C]">
-          Back to seach
-        </Link>
-      </div>
+        Back to seach
+      </Link>
       <Image
         src="/Image/management/background/background_photo_of_listings.jpg"
         height={400}
@@ -19,9 +17,9 @@ export default function Listings() {
         alt="background"
         className="mt-3 w-full h-[413px]"
       />
-      <div className="absolute top-2/4 left-2/12">
+      <div className="lg:absolute top-1/2 left-1/6">
         <h1 className="text-white text-4xl mb-5">Data Source Management</h1>
-        <div className="grid grid-cols-3 gap-5  max-w-5xl  top-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl top-20">
           <ListingCard imageName={"zillow"} title={"Zillow"} />
           <ListingCard imageName={"crexi"} title={"Crexi"} />
           <ListingCard imageName={"redfin"} title={"Redfin"} />
@@ -29,7 +27,7 @@ export default function Listings() {
           <ListingCard imageName={"loopnet"} title={"LoopNet"} />
           <ListingCard imageName={"zillow-2"} title={"Zillow"} />
         </div>
-        <div className="flex justify-end items-center gap-6 py-8">
+        <div className="flex lg:justify-end items-center gap-6 py-8">
           <Link href="/dashboard">
             <button
               className="text-[#000000] font-poppins bg-[#FFFFFF] ring-2 

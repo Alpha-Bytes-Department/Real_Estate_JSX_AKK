@@ -56,7 +56,7 @@ export default function SavedProperties() {
               alt="home_pic_1"
               height={800}
               width={800}
-              className=" h-[300px] w-full rounded-t-xl"
+              className="h-[300px] w-full rounded-t-xl"
             />
             <div className="flex gap-4">
               <button>

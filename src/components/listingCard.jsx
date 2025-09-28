@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function ListingCard({ imageName, title }) {
     return (
-        <div className=" w-[308px]">
+        <div className="max-w-[308px]">
             <div className="">
                 <Image src={`/Image/management/${imageName}.png`} alt="photo" height={400} width={400} className="w-full h-[200px]"/>
             </div>
