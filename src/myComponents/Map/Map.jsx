@@ -1,6 +1,18 @@
+"use client"
 import React from 'react';
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
 const Map = () => {
+  const { data: Information = [], error, isLoading } = useQuery({
+    queryKey: ["information"],
+    queryFn: async () => {
+      const res = await axios.get("http://10.10.12.51:4000/api/v1/realstate/listings/");
+      const data = await res.json(); 
+      return data.results;
+    },
+  });
     return (
         <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
         <Map
@@ -10,10 +22,15 @@ const Map = () => {
           gestureHandling={"greedy"}
           disableDefaultUI
         >
-          <Marker
-            position={markerLocation}
-            onClick={() => setSmallPopUp(true)}
+          {Information.map(info=>(
+            lat=info.latitude,
+            long=info.longitude,
+            <Marker
+            position={lat,long}
+            //onClick={() => setSmallPopUp(true)}
           />
+          ))}
+          
           {smallPopUp && (
             <InfoWindow
               position={markerLocation}

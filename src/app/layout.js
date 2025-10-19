@@ -1,6 +1,7 @@
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
+import ReactQueryProvider from "./providers/page";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppinsFont.variable} antialiased`}
       >
-        {children}
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
         {/* <Footer /> */}
       </body>
     </html>
