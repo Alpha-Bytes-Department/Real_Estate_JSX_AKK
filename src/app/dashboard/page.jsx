@@ -1,5 +1,5 @@
 "use client";
-import { APIProvider, Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker, InfoWindow, OverlayView } from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -9,6 +9,8 @@ import { CiSearch } from "react-icons/ci";
 import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
 import AccountPopUP from "@/myComponents/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/myComponents/ZoningPopUp/ZoningPopUp";
+import { IoStar } from "react-icons/io5";
+import { IoMdStarOutline } from "react-icons/io";
 
 export default function Dashboard() {
   const [account, setAccount] = useState(false);
@@ -24,7 +26,15 @@ export default function Dashboard() {
   const [smallPopUpMounted, setSmallPopUpMounted] = useState(false);
   const [bigPopUpMounted, setBigPopUpMounted] = useState(false);
 
+  // selected property for InfoWindow + big popup
+  const [selectedProperty, setSelectedProperty] = useState(null);
+
   const [showIframe, setShowIframe] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+
+  const [isSaved, setIsSaved] = useState(false);
 
   function handleAccount() {
     setAccount(!account);
@@ -61,8 +71,40 @@ export default function Dashboard() {
     handleFetchdata();
   }, []);
 
-  // selected property for InfoWindow + big popup
-  const [selectedProperty, setSelectedProperty] = useState(null);
+  // Function to search and move map to a city/address
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    setIsSearching(true);
+    try {
+      // Use Google Geocoding API to get coordinates from address/city
+      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        searchQuery
+      )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+
+      const response = await fetch(geocodeUrl);
+      const data = await response.json();
+
+      if (data.status === "OK" && data.results.length > 0) {
+        const location = data.results[0].geometry.location;
+        setMapCenter({ lat: location.lat, lng: location.lng });
+        console.log(`Moved to: ${searchQuery}`, location);
+      } else {
+        alert("Location not found. Please try a different search term.");
+      }
+    } catch (error) {
+      console.error("Error searching location:", error);
+      alert("Error searching location. Please try again.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Handle Enter key press in search input
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
@@ -204,6 +246,11 @@ export default function Dashboard() {
                   <Marker
                     key={property.id}
                     position={{ lat, lng }}
+                    icon={{
+                      url: "/fa-circle.svg", // ✅ Path to your custom icon
+                      scaledSize: new google.maps.Size(15, 15), // optional - resize icon
+                      anchor: new google.maps.Point(20, 40), // optional - aligns icon properly
+                    }}
                     onClick={() => setSelectedProperty(property)}
                   >
                     {/* wrapper ensures the marker bottom-center anchors at the position */}
@@ -258,7 +305,7 @@ export default function Dashboard() {
                 );
               })}
 
-              {/* Info window for selected property */}
+              {/* Info window for selected property
               {selectedProperty && (
                 <InfoWindow
                   position={{
@@ -282,16 +329,84 @@ export default function Dashboard() {
                         fill
                         className="object-cover"
                       />
+                      {isSaved ? <IoStar className="absolute top-2 right-2 text-orange-500 w-7 h-7"
+                        onClick={() => setIsSaved(!isSaved)} /> :
+                        <IoMdStarOutline className="absolute top-2 right-2 text-orange-500 w-7 h-7"
+                          onClick={() => setIsSaved(!isSaved)} />
+                      }
                     </div>
                     <div className="w-full h-[40%] p-2">
                       <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                        {selectedProperty.price}
+                        ${selectedProperty.price}
                       </h1>
+                      <p className="font-poppins text-[#000000] text-sm mt-1">{selectedProperty.beds}{' '}beds{' | '}
+                        {selectedProperty.baths}{' '} baths</p>
                       <p className="font-poppins text-[#000000] text-sm truncate">
                         {selectedProperty.details}
                       </p>
-                      <p className="font-poppins text-[#000000] text-sm">
-                        {selectedProperty.address.street}, {selectedProperty.address.city}
+                      <p className="font-poppins text-[#000000] text-sm mt-1">
+                        {selectedProperty.address.street} , {selectedProperty.address.city} , {selectedProperty.address.state}
+                      </p>
+                    </div>
+                  </div>
+                </InfoWindow>
+              )} */}
+
+              {/* Info window for selected property */}
+              {selectedProperty && (
+                <InfoWindow
+                  position={{
+                    lat: Number(selectedProperty.latitude),
+                    lng: Number(selectedProperty.longitude),
+                  }}
+                  onCloseClick={() => setSelectedProperty(null)}
+                >
+                  <div
+                    onClick={() => {
+                      // Only trigger modal if you click outside the star
+                      setSelectedProperty(selectedProperty);
+                      setBigPopUpMounted(true);
+                      requestAnimationFrame(() => setBigPopUp(true));
+                    }}
+                    className="w-full max-w-[250px] h-[250px] cursor-pointer"
+                  >
+                    <div className="w-full h-[60%] relative">
+                      <Image
+                        src={selectedProperty.image || "/placeholder.png"}
+                        alt="property-image"
+                        fill
+                        className="object-cover"
+                      />
+                      {isSaved ? (
+                        <IoStar
+                          className="absolute top-2 right-2 text-orange-500 w-7 h-7"
+                          onClick={(e) => {
+                            e.stopPropagation(); // ✅ Prevent modal from opening
+                            setIsSaved(!isSaved);
+                          }}
+                        />
+                      ) : (
+                        <IoMdStarOutline
+                          className="absolute top-2 right-2 text-orange-500 w-7 h-7"
+                          onClick={(e) => {
+                            e.stopPropagation(); // ✅ Prevent modal from opening
+                            setIsSaved(!isSaved);
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div className="w-full h-[40%] p-2">
+                      <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
+                        ${selectedProperty.price}
+                      </h1>
+                      <p className="font-poppins text-[#000000] text-sm mt-1">
+                        {selectedProperty.beds} beds | {selectedProperty.baths} baths
+                      </p>
+                      <p className="font-poppins text-[#000000] text-sm truncate">
+                        {selectedProperty.details}
+                      </p>
+                      <p className="font-poppins text-[#000000] text-sm mt-1">
+                        {selectedProperty.address.street}, {selectedProperty.address.city}, {selectedProperty.address.state}
                       </p>
                     </div>
                   </div>
@@ -313,16 +428,21 @@ export default function Dashboard() {
           >
             <CiSearch className="text-white text-2xl" />
             <input
-              className="text-white px-3 focus:outline-0"
-              placeholder="Search by adderess city or neighborhood"
-              title="Search by adderess city or neighborhood"
+              className="text-white px-3 focus:outline-0 bg-transparent w-full"
+              placeholder="Search by address city or neighborhood"
+              title="Search by address city or neighborhood"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
             />
             <div className="w-full max-w-[80px]">
               <Button
+                onClick={handleSearch}
+                disabled={isSearching}
                 className="w-full !h-[30px] font-poppins text-base cursor-pointer 
-                            hover:scale-105 hover:shadow-lg"
+                            hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Search
+                {isSearching ? "..." : "Search"}
               </Button>
             </div>
           </div>
@@ -380,7 +500,7 @@ export default function Dashboard() {
             transition-all duration-300 ease-out ${smallPopUp ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-2"
             }`}
         >
-          <ZoningPopUp />
+          <ZoningPopUp properties={properties} setProperties={setProperties} />
         </div>
       )}
 

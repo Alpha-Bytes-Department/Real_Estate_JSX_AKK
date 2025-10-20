@@ -213,7 +213,7 @@ import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
-export default function ZoningPopUp() {
+export default function ZoningPopUp({ properties, setProperties }) {
   const [zonedUnits, setZonedUnits] = useState([20, 100]);
   const [listPrice, setListPrice] = useState([100000, 5000000]);
   const [potentialPerUnit, setPotentialPerUnit] = useState([2000, 200000]);
@@ -238,6 +238,12 @@ export default function ZoningPopUp() {
   const onSubmit = (data) => {
     console.log("Form Data:", data);
     //alert(JSON.stringify(data, null, 2));
+    const propertyType = data.propertyType;
+    const filtered = properties.filter(property => {
+      if (property.home_type.toLowerCase() == propertyType.toLowerCase())
+        return property;
+    });
+    setProperties(filtered);
   };
 
   const onClear = () => {
@@ -321,9 +327,9 @@ export default function ZoningPopUp() {
                       className="accent-black"
                       type="radio"
                       name="type"
-                      value="multi-family"
-                      checked={field.value === "multi-family"}
-                      onChange={() => field.onChange("multi-family")}
+                      value="multi_family"
+                      checked={field.value === "multi_family"}
+                      onChange={() => field.onChange("multi_family")}
                     />{" "}
                     Multi-Family
                   </label>
@@ -365,9 +371,9 @@ export default function ZoningPopUp() {
                       className="accent-black"
                       type="radio"
                       name="type"
-                      value="single-family"
-                      checked={field.value === "single-family"}
-                      onChange={() => field.onChange("single-family")}
+                      value="single_family"
+                      checked={field.value === "single_family"}
+                      onChange={() => field.onChange("single_family")}
                     />{" "}
                     Single Family
                   </label>
