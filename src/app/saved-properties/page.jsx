@@ -1,9 +1,16 @@
+'use client'
 import Image from "next/image";
-import { ChevronLeft, Star } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useContext } from "react";
+import { BookmarkContext } from "@/providers/BookmarkProvider";
+import { CiBookmark } from "react-icons/ci";
+import { Button } from "@/components/ui/button";
 
 export default function SavedProperties() {
+
+  const { bookmarks, removeBookmark } = useContext(BookmarkContext);
+
   return (
     <div className="p-9 w-full max-w-[1300px] mx-auto">
       <div className="flex">
@@ -28,223 +35,52 @@ export default function SavedProperties() {
         </select>
       </div>
 
-      <div className="pt-12">
-        <nav>
-          <ul className="flex gap-8 font-poppins text-[#8F8C8C]">
-            <li>
-              <Link href="">All</Link>
-            </li>
-            <li>
-              <Link href="">Residential</Link>
-            </li>
-            <li>
-              <Link href="">Commercial</Link>
-            </li>
-            <li>
-              <Link href="">Favourites</Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <hr />
-      {/*----------------------- card item are here -------------------- */}
-      <div>
-        <div className="w-full  pt-8  shadow-xl rounded-xl">
-          <div className="w-full relative">
-            <Image
-              src="/Image/properitse/home_pic_1.jpg"
-              alt="home_pic_1"
-              height={800}
-              width={800}
-              className="h-[300px] w-full rounded-t-xl"
-            />
-            <div className="flex gap-4">
-              <button>
-                <div className="w-[35px] h-[35px] absolute top-2 right-2 rounded-full  bg-[white] flex items-center justify-center">
-                  <Star />
-                </div>
-              </button>
-              <button>
-                <div
-                  className="w-[35px] h-[35px] absolute top-2 right-14 rounded-full 
-                            bg-[white] flex items-center justify-center"
-                >
-                  <Trash2 />
-                </div>
-              </button>
-            </div>
+      <div className="lg:w-7xl mx-auto mt-8 px-2">
+        {bookmarks.length === 0 ? (
+          <div className="flex items-center justify-center py-20">
+            <p className="text-gray-500 text-lg font-medium bg-gray-50 border border-dashed border-gray-300 px-6 py-4 rounded-md shadow-sm">
+              No bookmarks found
+            </p>
           </div>
-          <div className="pt-4 flex flex-col lg:flex-row lg:justify-between py-5 mx-5">
-            <div className="flex flex-col gap-1">
-              <p className="font-poppins text-[#000000] font-normal">Zilow</p>
-              <h1 className="font-poppins font-semibold">
-                123 Oak Street, Pittsburgh,PA
-              </h1>
-              <p className="text-sm">Residential 3 beds 2 bath 15,00 sqft</p>
-              <h1 className="text-[#000000] font-poppins font-semibold pt-3">
-                $85,000
-              </h1>
-            </div>
-            <div className="flex flex-col text-end justify-between">
-              <h1 className="font-poppins font-semibold">$1,250/unit</h1>
-              <Link href="/property-details">
-                <button
-                  className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
-                        cursor-pointer font-poppins"
-                >
-                  View Details
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="w-full  pt-8  shadow-xl rounded-xl">
-          <div className="w-full relative">
-            <Image
-              src="/Image/properitse/home_pic_2.jpg"
-              alt="home_pic_1"
-              height={800}
-              width={800}
-              className=" h-[300px] w-full rounded-t-xl"
-            />
-            <div className="flex gap-4">
-              <button>
-                <div className="w-[35px] h-[35px] absolute top-2 right-2 rounded-full  bg-[white] flex items-center justify-center">
-                  <Star />
+        ) : (
+          <div>
+            {bookmarks.map((item) => (
+              <div className="shadow-xl p-4 rounded-sm" key={item.id}>
+                <div className="relative w-full h-[50vh]">
+                  <Image
+                    src={item.image}
+                    alt="Image"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-              </button>
-              <button>
-                <div
-                  className="w-[35px] h-[35px] absolute top-2 right-14 rounded-full 
-                            bg-[white] flex items-center justify-center"
+
+                <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
+                  ${item.price}
+                </h1>
+                <p className="font-poppins text-[#000000] text-sm mt-1">
+                  {item.beds} beds | {item.baths} baths
+                </p>
+                <p className="font-poppins text-[#000000] text-sm truncate">
+                  {item.details}
+                </p>
+                <p className="font-poppins text-[#000000] text-sm mt-1">
+                  {item.address.street}, {item.address.city},{" "}
+                  {item.address.state}
+                </p>
+                <Button
+                  onClick={() => removeBookmark(item.id)}
+                  className="border-2 rounded-none text-lg cursor-pointer text-red-500 hover:bg-red-100"
+                  variant="none"
                 >
-                  <Trash2 />
-                </div>
-              </button>
-            </div>
+                  <CiBookmark />
+                  Remove
+                </Button>
+
+              </div>
+            ))}
           </div>
-          <div className="pt-4 flex flex-col lg:flex-row lg:justify-between py-5 mx-5">
-            <div className="flex flex-col gap-1">
-              <p className="font-poppins text-[#000000] font-normal">Zilow</p>
-              <h1 className="font-poppins font-semibold">
-                123 Oak Street, Pittsburgh,PA
-              </h1>
-              <p className="text-sm">Residential 3 beds 2 bath 15,00 sqft</p>
-              <h1 className="text-[#000000] font-poppins font-semibold pt-3">
-                $85,000
-              </h1>
-            </div>
-            <div className="flex flex-col text-end justify-between">
-              <h1 className="font-poppins font-semibold">$1,250/unit</h1>
-              <Link href="/property-details">
-                <button
-                  className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
-                        cursor-pointer font-poppins"
-                >
-                  View Details
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="w-full  pt-8  shadow-xl rounded-xl">
-          <div className="w-full relative">
-            <Image
-              src="/Image/properitse/home_pic_3.jpg"
-              alt="home_pic_1"
-              height={800}
-              width={800}
-              className="h-[300px] w-full rounded-t-xl"
-            />
-            <div className="flex gap-4">
-              <button>
-                <div className="w-[35px] h-[35px] absolute top-2 right-2 rounded-full  bg-[white] flex items-center justify-center">
-                  <Star />
-                </div>
-              </button>
-              <button>
-                <div
-                  className="w-[35px] h-[35px] absolute top-2 right-14 rounded-full 
-                            bg-[white] flex items-center justify-center"
-                >
-                  <Trash2 />
-                </div>
-              </button>
-            </div>
-          </div>
-          <div className="pt-4 flex flex-col lg:flex-row lg:justify-between py-5 mx-5">
-            <div className="flex flex-col gap-1">
-              <p className="font-poppins text-[#000000] font-normal">Zilow</p>
-              <h1 className="font-poppins font-semibold">
-                123 Oak Street, Pittsburgh,PA
-              </h1>
-              <p className="text-sm">Residential 3 beds 2 bath 15,00 sqft</p>
-              <h1 className="text-[#000000] font-poppins font-semibold pt-3">
-                $85,000
-              </h1>
-            </div>
-            <div className="flex flex-col text-end justify-between">
-              <h1 className="font-poppins font-semibold">$1,250/unit</h1>
-              <Link href="/property-details">
-                <button
-                  className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
-                        cursor-pointer font-poppins"
-                >
-                  View Details
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="w-full  pt-8  shadow-xl rounded-xl">
-          <div className="w-full relative">
-            <Image
-              src="/Image/properitse/home_pic_4.jpg"
-              alt="home_pic_1"
-              height={800}
-              width={800}
-              className=" h-[300px] w-full rounded-t-xl"
-            />
-            <div className="flex gap-4">
-              <button>
-                <div className="w-[35px] h-[35px] absolute top-2 right-2 rounded-full  bg-[white] flex items-center justify-center">
-                  <Star />
-                </div>
-              </button>
-              <button>
-                <div
-                  className="w-[35px] h-[35px] absolute top-2 right-14 rounded-full 
-                            bg-[white] flex items-center justify-center"
-                >
-                  <Trash2 />
-                </div>
-              </button>
-            </div>
-          </div>
-          <div className="pt-4 flex flex-col lg:flex-row lg:justify-between py-5 mx-5">
-            <div className="flex flex-col gap-1">
-              <p className="font-poppins text-[#000000] font-normal">Zilow</p>
-              <h1 className="font-poppins font-semibold">
-                123 Oak Street, Pittsburgh,PA
-              </h1>
-              <p className="text-sm">Residential 3 beds 2 bath 15,00 sqft</p>
-              <h1 className="text-[#000000] font-poppins font-semibold pt-3">
-                $85,000
-              </h1>
-            </div>
-            <div className="flex flex-col text-end justify-between">
-              <h1 className="font-poppins font-semibold">$1,250/unit</h1>
-              <Link href="/property-details">
-                <button
-                  className="text-[#FFFFFF] bg-[#000000] px-4 py-2 rounded-lg mt-4
-                        cursor-pointer font-poppins"
-                >
-                  View Details
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

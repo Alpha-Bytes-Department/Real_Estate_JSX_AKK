@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
 import ReactQueryProvider from "./providers/page";
+import BookmarkProvider from "@/providers/BookmarkProvider";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -20,10 +21,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppinsFont.variable} antialiased`}
       >
-        <ReactQueryProvider>
+       <BookmarkProvider>
+         <ReactQueryProvider>
           {children}
         </ReactQueryProvider>
         {/* <Footer /> */}
+       </BookmarkProvider>
       </body>
     </html>
   );

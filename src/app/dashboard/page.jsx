@@ -1,40 +1,32 @@
 "use client";
-import { APIProvider, Map, Marker, InfoWindow, OverlayView } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { CiSearch } from "react-icons/ci";
+import { CiBookmark, CiSearch } from "react-icons/ci";
 import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
 import AccountPopUP from "@/myComponents/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/myComponents/ZoningPopUp/ZoningPopUp";
-import { IoStar } from "react-icons/io5";
-import { IoMdStarOutline } from "react-icons/io";
+import { BookmarkContext } from "@/providers/BookmarkProvider";
 
 export default function Dashboard() {
   const [account, setAccount] = useState(false);
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
 
-  // Multiple properties with their locations
+  const { bookmarks, toggleBookmark } = useContext(BookmarkContext);
+
   const [properties, setProperties] = useState([]);
-  // Use a valid default center (Dhaka) so map won't throw on first render.
   const [mapCenter, setMapCenter] = useState({ lat: 40.4387, lng: -79.9972 });
 
-  // Add mounting states for proper animation
   const [smallPopUpMounted, setSmallPopUpMounted] = useState(false);
   const [bigPopUpMounted, setBigPopUpMounted] = useState(false);
-
-  // selected property for InfoWindow + big popup
   const [selectedProperty, setSelectedProperty] = useState(null);
-
-  const [showIframe, setShowIframe] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
-  const [isSaved, setIsSaved] = useState(false);
 
   function handleAccount() {
     setAccount(!account);
@@ -44,22 +36,14 @@ export default function Dashboard() {
     try {
       const res = await fetch("http://10.10.12.51:4000/api/v1/realstate/listings/");
       const datas = await res.json();
-
-      // ensure results is an array before setting
       const results = Array.isArray(datas?.results) ? datas.results : [];
       setProperties(datas);
-      console.log("result are............", results);
-      console.log('api response : ', datas)
-
-      // If we have at least one property, center the map on the first property's coords
       if (results.length > 0) {
         const first = results[0];
         const lat = Number(first.latitude);
         const lng = Number(first.longitude);
         if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
           setMapCenter({ lat, lng });
-        } else {
-          console.warn("First property has invalid coordinates", first);
         }
       }
     } catch (err) {
@@ -71,25 +55,20 @@ export default function Dashboard() {
     handleFetchdata();
   }, []);
 
-  // Function to search and move map to a city/address
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     setIsSearching(true);
     try {
-      // Use Google Geocoding API to get coordinates from address/city
       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
         searchQuery
       )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-
       const response = await fetch(geocodeUrl);
       const data = await response.json();
-
       if (data.status === "OK" && data.results.length > 0) {
         const location = data.results[0].geometry.location;
         setMapCenter({ lat: location.lat, lng: location.lng });
-        console.log(`Moved to: ${searchQuery}`, location);
       } else {
-        alert("Location not found. Please try a different search term.");
+        alert("Location not found. Please try again.");
       }
     } catch (error) {
       console.error("Error searching location:", error);
@@ -99,7 +78,6 @@ export default function Dashboard() {
     }
   };
 
-  // Handle Enter key press in search input
   const handleSearchKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
@@ -129,7 +107,6 @@ export default function Dashboard() {
     console.log("Form datas:", datas);
   };
 
-  // Functions to handle popup opening and closing with proper animation timing
   const openSmallPopUp = () => {
     setSmallPopUpMounted(true);
     requestAnimationFrame(() => {
@@ -144,10 +121,7 @@ export default function Dashboard() {
     }, 300);
   };
 
-  // openBigPopUp accepts a property to show inside the big popup
   const openBigPopUp = (property) => {
-    console.log(property)
-    // setSelectedProperty ensures InfoWindow is closed (if necessary) and big popup has the property
     setSelectedProperty(property);
     setBigPopUpMounted(true);
     requestAnimationFrame(() => {
@@ -162,66 +136,49 @@ export default function Dashboard() {
     }, 300);
   };
 
-  // Refs for click outside detection
   const smallpopupRef = useRef(null);
   const bigpopupRef = useRef(null);
 
-  // Click outside and ESC key handlers for small popup
   useEffect(() => {
     if (!smallPopUp) return;
-
     function handleSideClick(e) {
       if (smallpopupRef.current && !smallpopupRef.current.contains(e.target)) {
         closeSmallPopUp();
       }
     }
-
     function handleESC(e) {
       if (e.key === "Escape") closeSmallPopUp();
     }
-
     document.addEventListener("mousedown", handleSideClick);
-    document.addEventListener("touchstart", handleSideClick);
     document.addEventListener("keydown", handleESC);
-
     return () => {
       document.removeEventListener("mousedown", handleSideClick);
-      document.removeEventListener("touchstart", handleSideClick);
       document.removeEventListener("keydown", handleESC);
     };
   }, [smallPopUp]);
 
-  // Click outside and ESC key handlers for big popup
   useEffect(() => {
     if (!bigPopUp) return;
-
     function handleSideClick(e) {
       if (bigpopupRef.current && !bigpopupRef.current.contains(e.target)) {
         closeBigPopUp();
       }
     }
-
     function handleESC(e) {
       if (e.key === "Escape") closeBigPopUp();
     }
-
     document.addEventListener("mousedown", handleSideClick);
-    document.addEventListener("touchstart", handleSideClick);
     document.addEventListener("keydown", handleESC);
-
     return () => {
       document.removeEventListener("mousedown", handleSideClick);
-      document.removeEventListener("touchstart", handleSideClick);
       document.removeEventListener("keydown", handleESC);
     };
   }, [bigPopUp]);
 
-  // main component
   return (
     <div>
       <div className="w-full h-screen fixed">
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
-          {/* Make sure mapCenter has numeric lat/lng before rendering Map */}
           {mapCenter && typeof mapCenter.lat === "number" && typeof mapCenter.lng === "number" && (
             <Map
               style={{ borderRadius: "20px" }}
@@ -230,42 +187,31 @@ export default function Dashboard() {
               gestureHandling={"greedy"}
               disableDefaultUI
             >
-              {/* Render property markers as price tags */}
               {properties?.map((property) => {
-                // console.log(property)
-                // guard against missing coords
                 const lat = Number(property.latitude);
                 const lng = Number(property.longitude);
-                if (Number.isNaN(lat) || Number.isNaN(lng)) {
-                  // skip invalid coordinates
-                  console.warn("Skipping property with invalid coords:", property);
-                  return null;
-                }
+                if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
 
                 return (
                   <Marker
                     key={property.id}
                     position={{ lat, lng }}
                     icon={{
-                      url: "/fa-circle.svg", // ✅ Path to your custom icon
-                      scaledSize: new google.maps.Size(15, 15), // optional - resize icon
-                      anchor: new google.maps.Point(20, 40), // optional - aligns icon properly
+                      url: "/fa-circle.svg",
+                      scaledSize: new google.maps.Size(15, 15),
+                      anchor: new google.maps.Point(20, 40),
                     }}
                     onClick={() => setSelectedProperty(property)}
                   >
-                    {/* wrapper ensures the marker bottom-center anchors at the position */}
                     <div
-                      // onClick={() => console.log(property)}
-                      // onClick={() => setSelectedProperty(property)}
-                      // Tailwind classes kept; inline styles guarantee layout/visibility
                       className="cursor-pointer transition-colors"
                       style={{
-                        position: "relative", // overlay positioning context
-                        transform: "translate(-50%, -100%)", // anchor bottom-center
-                        left: "50%", // center horizontally relative to overlay anchoring
-                        top: "100%", // move above the anchor point
-                        zIndex: 9999, // ensure above map elements
-                        pointerEvents: "auto", // allow hover/click
+                        position: "relative",
+                        transform: "translate(-50%, -100%)",
+                        left: "50%",
+                        top: "100%",
+                        zIndex: 9999,
+                        pointerEvents: "auto",
                         display: "inline-flex",
                         alignItems: "center",
                       }}
@@ -273,7 +219,6 @@ export default function Dashboard() {
                       <div
                         className="bg-[#00308F] px-3 py-1 rounded-md shadow-md hover:bg-[#002266] transition-colors"
                         style={{
-                          // inline fallbacks in case Tailwind utilities don't apply
                           background: "#00308F",
                           padding: "4px 12px",
                           borderRadius: "8px",
@@ -288,8 +233,6 @@ export default function Dashboard() {
                           {property.price}
                         </span>
                       </div>
-
-                      {/* optional drop pin triangle so it reads like a map pin */}
                       <div
                         style={{
                           width: 0,
@@ -305,54 +248,6 @@ export default function Dashboard() {
                 );
               })}
 
-              {/* Info window for selected property
-              {selectedProperty && (
-                <InfoWindow
-                  position={{
-                    lat: Number(selectedProperty.latitude),
-                    lng: Number(selectedProperty.longitude),
-                  }}
-                  onCloseClick={() => setSelectedProperty(selectedProperty)}
-                >
-                  <div
-                    onClick={() => {
-                      setSelectedProperty(selectedProperty); // close InfoWindow
-                      setBigPopUpMounted(true);
-                      requestAnimationFrame(() => setBigPopUp(true));
-                    }}
-                    className="w-full max-w-[250px] h-[250px] cursor-pointer"
-                  >
-                    <div className="w-full h-[60%] relative">
-                      <Image
-                        src={selectedProperty.image || "/placeholder.png"}
-                        alt="property-image"
-                        fill
-                        className="object-cover"
-                      />
-                      {isSaved ? <IoStar className="absolute top-2 right-2 text-orange-500 w-7 h-7"
-                        onClick={() => setIsSaved(!isSaved)} /> :
-                        <IoMdStarOutline className="absolute top-2 right-2 text-orange-500 w-7 h-7"
-                          onClick={() => setIsSaved(!isSaved)} />
-                      }
-                    </div>
-                    <div className="w-full h-[40%] p-2">
-                      <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                        ${selectedProperty.price}
-                      </h1>
-                      <p className="font-poppins text-[#000000] text-sm mt-1">{selectedProperty.beds}{' '}beds{' | '}
-                        {selectedProperty.baths}{' '} baths</p>
-                      <p className="font-poppins text-[#000000] text-sm truncate">
-                        {selectedProperty.details}
-                      </p>
-                      <p className="font-poppins text-[#000000] text-sm mt-1">
-                        {selectedProperty.address.street} , {selectedProperty.address.city} , {selectedProperty.address.state}
-                      </p>
-                    </div>
-                  </div>
-                </InfoWindow>
-              )} */}
-
-              {/* Info window for selected property */}
               {selectedProperty && (
                 <InfoWindow
                   position={{
@@ -363,7 +258,6 @@ export default function Dashboard() {
                 >
                   <div
                     onClick={() => {
-                      // Only trigger modal if you click outside the star
                       setSelectedProperty(selectedProperty);
                       setBigPopUpMounted(true);
                       requestAnimationFrame(() => setBigPopUp(true));
@@ -377,23 +271,19 @@ export default function Dashboard() {
                         fill
                         className="object-cover"
                       />
-                      {isSaved ? (
-                        <IoStar
-                          className="absolute top-2 right-2 text-orange-500 w-7 h-7"
-                          onClick={(e) => {
-                            e.stopPropagation(); // ✅ Prevent modal from opening
-                            setIsSaved(!isSaved);
-                          }}
-                        />
-                      ) : (
-                        <IoMdStarOutline
-                          className="absolute top-2 right-2 text-orange-500 w-7 h-7"
-                          onClick={(e) => {
-                            e.stopPropagation(); // ✅ Prevent modal from opening
-                            setIsSaved(!isSaved);
-                          }}
-                        />
-                      )}
+                      <div className="flex items-center gap-3 mt-3">
+                        <Button
+                          className={`border-2 rounded-none text-lg cursor-pointer ${
+                            bookmarks.some((i) => i.id === selectedProperty.id)
+                              ? "bg-[#3366CC] text-white hover:bg-[#3366CC] hover:text-white"
+                              : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                          }`}
+                          variant="ghost"
+                          onClick={() => toggleBookmark(selectedProperty)}
+                        >
+                          <CiBookmark />
+                        </Button>
+                      </div>
                     </div>
                     <div className="w-full h-[40%] p-2">
                       <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
@@ -406,7 +296,8 @@ export default function Dashboard() {
                         {selectedProperty.details}
                       </p>
                       <p className="font-poppins text-[#000000] text-sm mt-1">
-                        {selectedProperty.address.street}, {selectedProperty.address.city}, {selectedProperty.address.state}
+                        {selectedProperty.address.street}, {selectedProperty.address.city},{" "}
+                        {selectedProperty.address.state}
                       </p>
                     </div>
                   </div>
@@ -421,7 +312,6 @@ export default function Dashboard() {
         </div>
 
         <div className="absolute top-8 w-full flex justify-between">
-          {/*search box*/}
           <div
             className="flex justify-between items-center py-5 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
                 ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
@@ -430,7 +320,6 @@ export default function Dashboard() {
             <input
               className="text-white px-3 focus:outline-0 bg-transparent w-full"
               placeholder="Search by address city or neighborhood"
-              title="Search by address city or neighborhood"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleSearchKeyPress}
@@ -492,27 +381,28 @@ export default function Dashboard() {
         {account && <AccountPopUP />}
       </div>
 
-      {/* Small Popup with proper animation */}
       {smallPopUpMounted && (
         <div
           ref={smallpopupRef}
           className={`fixed bottom-20 left-2/4 transform -translate-x-1/2 z-50
-            transition-all duration-300 ease-out ${smallPopUp ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-2"
+            transition-all duration-300 ease-out ${
+              smallPopUp
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-95 translate-y-2"
             }`}
         >
-          <ZoningPopUp properties={properties} setProperties={setProperties} />
+          <ZoningPopUp properties={properties} setProperties={setProperties} 
+          smallPopUpMounted={smallPopUpMounted} setSmallPopUpMounted={setSmallPopUpMounted}/>
         </div>
       )}
 
-      {/* Big Popup with proper animation */}
       {bigPopUpMounted && (
-        <div
-          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/70 transition-all`}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 transition-all">
           <div
             ref={bigpopupRef}
-            className={`bg-white rounded-lg w-full max-w-[850px] h-[90vh] overflow-hidden shadow-lg transition-transform duration-300 ease-out ${bigPopUp ? "scale-100" : "scale-95"
-              }`}
+            className={`bg-white rounded-lg w-full max-w-[850px] h-[90vh] overflow-hidden shadow-lg transition-transform duration-300 ease-out ${
+              bigPopUp ? "scale-100" : "scale-95"
+            }`}
           >
             <div className="w-full h-full relative">
               <iframe
@@ -521,13 +411,26 @@ export default function Dashboard() {
                 className="w-full h-full border-0 rounded-lg"
               ></iframe>
 
+              {/* ✅ Bookmark Button on Modal */}
+              <Button
+                className={`absolute top-3 left-3 border-2 rounded-none text-lg cursor-pointer z-50 ${
+                  bookmarks.some((i) => i.id === selectedProperty?.id)
+                    ? "bg-[#3366CC] text-white hover:bg-[#3366CC] hover:text-white"
+                    : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                }`}
+                variant="ghost"
+                onClick={() => toggleBookmark(selectedProperty)}
+              >
+                <CiBookmark />
+              </Button>
+
               {/* Close Button */}
               <button
                 onClick={() => {
                   setBigPopUp(false);
                   setTimeout(() => setBigPopUpMounted(false), 300);
                 }}
-                className="absolute top-3 right-3 bg-black text-white px-3 py-1 rounded-md hover:bg-gray-800 transition"
+                className="absolute top-3 right-3 bg-black text-white px-3 py-1 mb-2 rounded-md hover:bg-gray-800 transition"
               >
                 ✕
               </button>
@@ -535,7 +438,6 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

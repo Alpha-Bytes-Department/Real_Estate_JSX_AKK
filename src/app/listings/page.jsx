@@ -17,7 +17,12 @@ export default function Listings() {
         alt="background"
         className="mt-3 w-full h-[413px]"
       />
-      <div className="lg:absolute top-1/2 left-1/6">
+      
+      <div className="flex items-center justify-center mt-8">
+        <ListingCard imageName={"zillow"} title={"Zillow"}/>
+      </div>
+
+      {/* <div className="lg:absolute top-1/2 left-1/6">
         <h1 className="text-white text-4xl mb-5">Data Source Management</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl top-20">
           <ListingCard imageName={"zillow"} title={"Zillow"} />
@@ -47,7 +52,7 @@ export default function Listings() {
             </button>
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

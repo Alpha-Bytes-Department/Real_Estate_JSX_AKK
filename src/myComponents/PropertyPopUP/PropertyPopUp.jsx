@@ -7,11 +7,6 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
-
-
-
-
-
 export default function PropertyPopUP({setBigPopUp}) {
     const [showMore, setShowMore] = useState(false);
 

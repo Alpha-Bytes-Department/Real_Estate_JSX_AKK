@@ -1,3 +1,18 @@
+'use client'
+import { BookmarkContext } from '@/providers/BookmarkProvider'
+import React, { useContext } from 'react'
+
+const HomePage = () => {
+    const user = useContext(BookmarkContext)
+    console.log(user);
+  return (
+    <div>
+        <h1>{user.name}</h1>
+    </div>
+  )
+}
+
+export default HomePage
 // import { Poppins } from "next/font/google";
 // import Image from "next/image";
 

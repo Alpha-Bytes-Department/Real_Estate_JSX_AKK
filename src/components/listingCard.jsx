@@ -9,7 +9,7 @@ export default function ListingCard({ imageName, title }) {
             <div className="w-full flex flex-col items-center justify-center
             text-center  min-h-32 border-2 border-t-0 border-gray-600 py-5">
                 <h1 className="text-[#000000] font-poppins font-bold text-5xl">{title}</h1>
-                <p className="text-[#8F8C8C] font-poppins text-2xl mt-3">Last Scraped: 2023-11-15 10:00 am</p>
+                <p className="text-[#8F8C8C] font-poppins text-2xl mt-3">Last Scraped: 2025-10-21 05:27 am</p>
             </div>
         </div>
     );

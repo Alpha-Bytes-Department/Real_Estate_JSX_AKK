@@ -237,10 +237,13 @@ export default function ZoningPopUp({ properties, setProperties }) {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    const lower = data.listPrice[0];
+    const higher = data.listPrice[1];
+    console.log(lower);
     //alert(JSON.stringify(data, null, 2));
     const propertyType = data.propertyType;
     const filtered = properties.filter(property => {
-      if (property.home_type.toLowerCase() == propertyType.toLowerCase())
+      if (property.home_type.toLowerCase() == propertyType.toLowerCase() && (property.price >= lower && property.price <= higher))
         return property;
     });
     setProperties(filtered);
