@@ -3,11 +3,11 @@ import { BookmarkContext } from '@/providers/BookmarkProvider'
 import React, { useContext } from 'react'
 
 const HomePage = () => {
-    const user = useContext(BookmarkContext)
-    console.log(user);
+  const user = useContext(BookmarkContext)
+  console.log(user);
   return (
     <div>
-        <h1>{user.name}</h1>
+      <h1>{user.name}</h1>
     </div>
   )
 }
@@ -38,7 +38,7 @@ export default HomePage
 //             </div>
 
 //             <div className="flex flex-col lg:flex-row gap-8 pt-4">
-//                 <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px] 
+//                 <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px]
 //                     rounded-md font-poppins">
 //                     <div className="flex gap-3">
 //                         <Image src="/Google_Icon.svg" alt="google_icon" height={20} width={20}
@@ -48,7 +48,7 @@ export default HomePage
 //                     </div>
 //                 </button>
 
-//                 <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px] 
+//                 <button className="text-[#000000] ring-2 ring-[#D9D9D9] w-[220px] h-[40px]
 //                     rounded-md font-poppins">
 //                     <div className="flex gap-3">
 //                         <Image src="/Apple_Icon.svg" alt="apple_icon" height={20} width={20}

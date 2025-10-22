@@ -117,7 +117,26 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Adding this in global.css (or wherever I define global styles) */
+.gm-style-iw {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Remove extra inner div padding that causes gaps */
+.gm-style-iw-d {
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Hides the default close button inside InfoWindow */
+.gm-ui-hover-effect {
+  display: none !important;
 }

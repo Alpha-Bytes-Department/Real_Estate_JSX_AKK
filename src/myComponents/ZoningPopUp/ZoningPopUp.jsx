@@ -213,7 +213,7 @@ import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
-export default function ZoningPopUp({ properties, setProperties }) {
+export default function ZoningPopUp({ properties, setProperties, setSmallPopUp }) {
   const [zonedUnits, setZonedUnits] = useState([20, 100]);
   const [listPrice, setListPrice] = useState([100000, 5000000]);
   const [potentialPerUnit, setPotentialPerUnit] = useState([2000, 200000]);
@@ -235,11 +235,11 @@ export default function ZoningPopUp({ properties, setProperties }) {
     return `$${val}`;
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
     console.log("Form Data:", data);
     const lower = data.listPrice[0];
     const higher = data.listPrice[1];
-    console.log(lower);
+    // console.log(lower);
     //alert(JSON.stringify(data, null, 2));
     const propertyType = data.propertyType;
     const filtered = properties.filter(property => {
@@ -247,6 +247,23 @@ export default function ZoningPopUp({ properties, setProperties }) {
         return property;
     });
     setProperties(filtered);
+
+    // try {
+    //   const res = await fetch(`http://10.10.12.51:4000/api/v1/realstate/listings/?home_type=${properties.home_type}`);
+    //   const datas = await res.json();
+    //   //const results = Array.isArray(datas?.results) ? datas.results : [];
+    //   setProperties(datas);
+    //   if (datas.length > 0) {
+    //     const first = datas[0];
+    //     const lat = Number(first.latitude);
+    //     const lng = Number(first.longitude);
+    //     if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+    //       setMapCenter({ lat, lng });
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.error("Error fetching properties:", err);
+    // }
   };
 
   const onClear = () => {
@@ -501,13 +518,18 @@ export default function ZoningPopUp({ properties, setProperties }) {
         <div className="flex justify-between mt-6">
           <button
             onClick={onClear}
-            className="border border-black rounded-lg px-6 py-2 font-medium hover:bg-gray-100"
+            className="border border-black rounded-lg px-6 py-2 font-medium hover:bg-gray-100
+            cursor-pointer"
           >
             Clear
           </button>
           <button
-            onClick={handleSubmit(onSubmit)}
-            className="bg-black text-white rounded-lg px-6 py-2 font-medium hover:bg-gray-800"
+            onClick={() => {
+              handleSubmit(onSubmit)();
+              setSmallPopUp(false);
+            }}
+            className="bg-black text-white rounded-lg px-6 py-2 font-medium hover:bg-gray-800
+            cursor-pointer"
           >
             Apply
           </button>
