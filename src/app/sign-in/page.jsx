@@ -49,7 +49,9 @@ export default function SignIn() {
         err?.response?.data?.message || err?.message || "Login failed";
       setErrorMessage(msg);
     } finally {
+
       setLoginLoading(false);
+       router.push("/dashboard");  //default navigation after login only for development process
     }
   };
 

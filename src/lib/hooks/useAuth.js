@@ -4,47 +4,35 @@ import { loginRequest } from "@/lib/auth";
 import { saveAuth, clearAuth } from "@/lib/auth";
 
 export function useAuth() {
-  // diagnostic: verify query client shape and provide fallback
-  let queryClient;
-  try {
-    queryClient = useQueryClient();
-    // diagnostic logs
-    // eslint-disable-next-line no-console
-    console.log("useAuth: queryClient:", queryClient);
-    // eslint-disable-next-line no-console
-    console.log(
-      "useAuth: has defaultMutationOptions:",
-      typeof queryClient?.defaultMutationOptions
+  // Always call useQueryClient - hooks must be called unconditionally
+  const queryClient = useQueryClient();
+
+  // diagnostic logs for debugging
+  console.log("useAuth: queryClient:", queryClient);
+  console.log(
+    "useAuth: has defaultMutationOptions:",
+    typeof queryClient?.defaultMutationOptions
+  );
+  console.log(
+    "useAuth: getDefaultOptions:",
+    typeof queryClient?.getDefaultOptions
+  );
+
+  if (queryClient && typeof queryClient.defaultMutationOptions !== "function") {
+    // add a safe fallback to avoid MutationObserver calling undefined
+    // This should be temporary — ideally the QueryClient should be created
+    // with defaultOptions or the correct package versions should be used.
+    console.warn(
+      "queryClient.defaultMutationOptions missing — adding fallback"
     );
-    // eslint-disable-next-line no-console
-    console.log(
-      "useAuth: getDefaultOptions:",
-      typeof queryClient?.getDefaultOptions
-    );
-    if (
-      queryClient &&
-      typeof queryClient.defaultMutationOptions !== "function"
-    ) {
-      // add a safe fallback to avoid MutationObserver calling undefined
-      // This should be temporary — ideally the QueryClient should be created
-      // with defaultOptions or the correct package versions should be used.
-      // eslint-disable-next-line no-console
-      console.warn(
-        "queryClient.defaultMutationOptions missing — adding fallback"
-      );
-      queryClient.defaultMutationOptions = (opts) => {
-        return {
-          ...(queryClient.getDefaultOptions
-            ? queryClient.getDefaultOptions("mutation")
-            : {}),
-          ...opts,
-        };
+    queryClient.defaultMutationOptions = (opts) => {
+      return {
+        ...(queryClient.getDefaultOptions
+          ? queryClient.getDefaultOptions("mutation")
+          : {}),
+        ...opts,
       };
-    }
-  } catch (err) {
-    // If useQueryClient throws (no provider), keep going — useMutation will fail more gracefully.
-    // eslint-disable-next-line no-console
-    console.warn("useAuth: useQueryClient unavailable:", err.message || err);
+    };
   }
 
   const mutation = useMutation({
@@ -61,8 +49,6 @@ export function useAuth() {
       console.error("Login error:", err);
     },
   });
-
-  
 
   const logout = () => {
     clearAuth();

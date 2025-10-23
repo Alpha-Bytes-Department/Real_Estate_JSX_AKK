@@ -1,4 +1,4 @@
-import ListingCard from "@/components/listingCard";
+import ListingCard from "@/components/common/listingCard";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +17,9 @@ export default function Listings() {
         alt="background"
         className="mt-3 w-full h-[413px]"
       />
-      
+
       <div className="flex items-center justify-center mt-8">
-        <ListingCard imageName={"zillow"} title={"Zillow"}/>
+        <ListingCard imageName={"zillow"} title={"Zillow"} />
       </div>
 
       {/* <div className="lg:absolute top-1/2 left-1/6">

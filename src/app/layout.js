@@ -1,7 +1,7 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer";
-import ReactQueryProvider from "./providers/page";
+import Footer from "@/components/layout/footer";
+import ReactQueryProvider from "@/providers/QueryProvider";
 import BookmarkProvider from "@/providers/BookmarkProvider";
 
 const poppinsFont = Poppins({
@@ -24,7 +24,6 @@ export default function RootLayout({ children }) {
       >
         <BookmarkProvider>
           <ReactQueryProvider>{children}</ReactQueryProvider>
-       
         </BookmarkProvider>
       </body>
     </html>

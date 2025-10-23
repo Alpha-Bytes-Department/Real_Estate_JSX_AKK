@@ -7,7 +7,7 @@ export const storageKeys = {
 };
 
 
-
+// ======================== Called when logging in ========================
 export function saveAuth({ access, refresh, user }) {
   try {
     if (access) localStorage.setItem(storageKeys.access, access);
@@ -27,6 +27,7 @@ export function clearAuth() {
     localStorage.removeItem(storageKeys.refresh);
     localStorage.removeItem(storageKeys.user);
     clearAuthHeader();
+    
   } catch (err) {
     console.error("clearAuth error:", err);
   }
