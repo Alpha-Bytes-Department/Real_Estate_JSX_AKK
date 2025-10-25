@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "photos.zillowstatic.com",
       },
+      {
+        protocol: "http",
+        hostname: "10.10.12.51",
+      }
     ],
   },
 }

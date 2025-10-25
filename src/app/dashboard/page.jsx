@@ -8,6 +8,8 @@ import {
 } from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { showCustomSwal } from "@/components/ui/CustomSwal";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -16,8 +18,10 @@ import { CiBookmark, CiSearch } from "react-icons/ci";
 import AccountPopUP from "@/components/features/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
+import { FaSearch } from "react-icons/fa";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [account, setAccount] = useState(false);
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
@@ -62,10 +66,38 @@ export default function Dashboard() {
       console.error("Error fetching properties:", err);
     }
   };
+   const user = JSON.parse(localStorage.getItem("auth_user"));
+   const name = user?.name || "User";
+   const imageUrl = user?.profile_pic.startsWith("http")
+     ? user.profile_pic
+     : `http://10.10.12.51:4000${user?.profile_pic}`;
 
   useEffect(() => {
+    // Client-side guard: if no auth info in localStorage, show swal then redirect to sign-in
+    const user =
+      typeof window !== "undefined" ? localStorage.getItem("auth_user") : null;
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
+    if (!user || !token) {
+      (async () => {
+        await showCustomSwal({
+          icon: "warning",
+          title: "Login required",
+          text: "Please sign in to access the dashboard.",
+          confirmButtonText: "OK",
+        });
+        router.push(
+          `/sign-in?loginRequired=1&redirect=${encodeURIComponent(
+            "/dashboard"
+          )}`
+        );
+      })();
+      return;
+    }
+
     handleFetchdata();
-    
   }, []);
 
   const handleSearch = async () => {
@@ -188,8 +220,6 @@ export default function Dashboard() {
     };
   }, [bigPopUp]);
 
-  
-
   return (
     <div>
       <div className="w-full h-screen fixed">
@@ -309,31 +339,31 @@ export default function Dashboard() {
             )}
         </APIProvider>
 
-        <div className="absolute top-1 right-8">
-          <p className="text-black font-poppins">Maya</p>
+        <div className="absolute top-1 hidden lg:block right-8">
+          <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">{name}</p>
         </div>
 
-        <div className="absolute top-8 w-full flex justify-between">
+        <div className="absolute top-8 px-2 w-full flex justify-between">
           <div
-            className="flex justify-between items-center py-5 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
+            className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
                 ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
           >
-            <CiSearch className="text-white text-2xl" />
+            
             <input
               className="text-white px-3 focus:outline-0 bg-transparent w-full"
-              placeholder="Search by address city or neighborhood"
+              placeholder="Search by address city "
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleSearchKeyPress}
             />
-            <div className="w-full max-w-[80px]">
+            <div className="w-8 lg:max-w-[80px]">
               <Button
                 onClick={handleSearch}
                 disabled={isSearching}
-                className="w-full !h-[30px] font-poppins text-base cursor-pointer 
+                className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
                             hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSearching ? "..." : "Search"}
+                {isSearching ? "..." : <FaSearch/>}
               </Button>
             </div>
           </div>
@@ -347,10 +377,10 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="w-12 h-12 relative mr-8">
+          <div className="w-12 h-12 relative lg:mr-8">
             <button className="cursor-pointer" onClick={handleAccount}>
               <Image
-                src="/User.jpg"
+                src={imageUrl}
                 alt="user"
                 fill
                 className="rounded-full object-cover ring-3 ring-[#00308F]"

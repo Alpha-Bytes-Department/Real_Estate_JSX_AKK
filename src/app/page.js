@@ -1,11 +1,28 @@
 // Home-Page
-
+'use client';
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { useEffect } from "react";
 
 export default function FirstPage() {
+
+  useEffect(()=>{
+    const user = localStorage.getItem("auth_user");
+    const access = localStorage.getItem("access_token");
+    if(access && user){
+      // Check if there's a redirect parameter from the middleware
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect');
+      
+      if (redirectTo) {
+        window.location.href = redirectTo;
+      } else {
+        window.location.href = "/dashboard";
+      }
+    }
+  },[])
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center gap-8">
       <div className="max-w-[300px] w-full h-[70px] relative">
