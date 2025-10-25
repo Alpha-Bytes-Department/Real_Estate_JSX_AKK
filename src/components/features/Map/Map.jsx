@@ -14,7 +14,7 @@ const Map = () => {
     },
   });
     return (
-        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}>
+        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
         <Map
           style={{ borderRadius: "20px" }}
           defaultZoom={13}

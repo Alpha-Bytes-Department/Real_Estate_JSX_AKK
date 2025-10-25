@@ -51,7 +51,7 @@ export default function SignIn() {
     } finally {
 
       setLoginLoading(false);
-       router.push("/dashboard");  //default navigation after login only for development process
+      //  router.push("/dashboard");  //default navigation after login only for development process
     }
   };
 

@@ -51,4 +51,18 @@ export async function signupRequest(payload) {
   return resp.data;
 }
 
-// ======================== Request for Getting User Profile ========================
+// ======================== Request for forgot password ========================
+export async function forgotPasswordRequest(payload) {
+  console.log("forgotPasswordRequest called with:", payload);
+  const resp = await api.post("user/password-reset/", payload);
+  console.log("forgotPasswordRequest response data:", resp.data);
+  return resp.data;
+}
+
+// ======================== Request for reset password ========================
+export async function resetPasswordRequest(payload) {
+  console.log("resetPasswordRequest called with:", payload);
+  const resp = await api.post(`user/password-reset-confirm/${payload.uid}/${payload.token}/`, {password: payload.password, confirm_password: payload.confirm_password});
+  console.log("resetPasswordRequest response data:", resp.data);
+  return resp.data;
+}

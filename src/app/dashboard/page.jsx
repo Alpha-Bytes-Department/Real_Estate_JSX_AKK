@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { CiBookmark, CiSearch } from "react-icons/ci";
-import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
+// import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
 import AccountPopUP from "@/components/features/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
@@ -42,6 +42,7 @@ export default function Dashboard() {
 
   const handleFetchdata = async () => {
     try {
+      console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
       const res = await fetch(
         "http://10.10.12.51:4000/api/v1/realstate/listings/"
       );
@@ -64,6 +65,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     handleFetchdata();
+    
   }, []);
 
   const handleSearch = async () => {
@@ -185,6 +187,8 @@ export default function Dashboard() {
       document.removeEventListener("keydown", handleESC);
     };
   }, [bigPopUp]);
+
+  
 
   return (
     <div>

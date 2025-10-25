@@ -1,6 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
 @import "tw-animate-css";
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -139,4 +139,55 @@
 /* Hides the default close button inside InfoWindow */
 .gm-ui-hover-effect {
   display: none !important;
+}
+
+/* SweetAlert2 black & white theme */
+.swal-bw-popup {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-radius: 12px !important;
+  border: 1px solid #000 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  padding: 1.25rem !important;
+}
+.swal-bw-title {
+  color: #000000 !important;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.swal-bw-content {
+  color: #000000 !important;
+  margin-bottom: 1rem;
+}
+.swal-bw-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.swal-bw-confirm {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  font-weight: 600;
+}
+.swal-bw-cancel {
+  background: transparent !important;
+  color: #000000 !important;
+  border: 1px solid #000 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+}
+
+/* Make the built-in icons conform to B/W aesthetics */
+.swal-bw-popup .swal2-icon {
+  filter: grayscale(100%) !important;
+}
+.swal-bw-popup .swal2-icon.swal2-success {
+  background: transparent !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
 }
