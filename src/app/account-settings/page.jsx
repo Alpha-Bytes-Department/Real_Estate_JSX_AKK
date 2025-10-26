@@ -279,10 +279,10 @@ export default function AccountSettings() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 bg-[#F9FAFB] min-h-screen">
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 w-full justify-center py-4 lg:my-20 px-4 lg:px-0">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 w-full justify-center py-4 lg:my-10 px-4 lg:px-0">
         {/* account setting div  */}
-        <div className="flex flex-col justify-between lg:mt-10 order-2 lg:order-1">
-          <div className="w-full flex flex-col gap-6">
+        <div className="flex flex-col justify-between lg:mt-2 order-2 lg:order-1">
+          <div className="w-full flex flex-col gap-4">
             <h1 className="text-[#000000] font-poppins font-semibold text-2xl lg:text-3xl text-center">
               Account Settings
             </h1>
@@ -321,47 +321,6 @@ export default function AccountSettings() {
                 <p className="font-poppins text-sm lg:text-base">Listings</p>
                 <RxHamburgerMenu className="text-lg lg:text-xl" />
               </Link>
-              <button
-                onClick={handleLogout}
-                className={`flex justify-between items-center p-3 rounded-lg shadow-md transition-transform duration-200 ease-in-out 
-               active:scale-95 ${
-                 unactiveLink ? "bg-black text-white" : "bg-white text-black"
-               }`}
-              >
-                <p className="font-poppins text-sm lg:text-base">Logout</p>
-                <TbLogin className="text-lg lg:text-xl" />
-              </button>
-            </div>
-          </div>
-          {/* privicy policy  */}
-          <div className="w-full max-w-sm flex flex-col gap-4 lg:gap-8 pb-8 lg:pb-38 mt-4 lg:mt-0">
-            <div className="flex flex-col gap-3 lg:gap-5">
-              <Link
-                href="/account-settings"
-                className={`w-full p-3 rounded-lg shadow-md transition-transform duration-200 ease-in-out 
-               active:scale-95 ${
-                 unactiveLink
-                   ? "bg-black text-white"
-                   : "bg-[#D9D9D9] text-black"
-               }`}
-              >
-                <p className="font-poppins text-sm lg:text-base">
-                  Privacy Policy
-                </p>
-              </Link>
-              <Link
-                href="/account-settings"
-                className={`w-full p-3 rounded-lg shadow-md transition-transform duration-200 ease-in-out 
-               active:scale-95 ${
-                 unactiveLink
-                   ? "bg-black text-white"
-                   : "bg-[#D9D9D9] text-black"
-               }`}
-              >
-                <p className="font-poppins text-sm lg:text-base">
-                  Terms of Services
-                </p>
-              </Link>
               <Link
                 href="/dashboard"
                 className={`w-full p-3 rounded-lg shadow-md transition-transform duration-200 ease-in-out 
@@ -375,10 +334,20 @@ export default function AccountSettings() {
                   Back to Dashboard
                 </p>
               </Link>
+              <button
+                onClick={handleLogout}
+                className={`flex justify-between items-center p-3 rounded-lg shadow-md transition-transform duration-200 ease-in-out 
+               active:scale-95 ${
+                 unactiveLink ? "bg-black text-white" : "bg-white text-black"
+               }`}
+              >
+                <p className="font-poppins text-sm lg:text-base">Logout</p>
+                <TbLogin className="text-lg lg:text-xl" />
+              </button>
             </div>
           </div>
         </div>
-        <div className="order-1 lg:order-2 w-full lg:w-auto">
+        <div className="order-1 py-3 lg:order-2 w-full lg:w-auto">
           {/* Personal Information & Security Section */}
           <div className="w-full max-w-4xl lg:w-[900px] bg-white rounded-lg shadow-lg">
             {/* Header */}
