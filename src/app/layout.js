@@ -1,13 +1,13 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer";
-import ReactQueryProvider from "./providers/page";
+import Footer from "@/components/layout/footer";
+import ReactQueryProvider from "@/providers/QueryProvider";
 import BookmarkProvider from "@/providers/BookmarkProvider";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins"
+  variable: "--font-poppins",
 });
 
 export const metadata = {
@@ -20,13 +20,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${poppinsFont.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
-       <BookmarkProvider>
-         <ReactQueryProvider>
-          {children}
-        </ReactQueryProvider>
-        {/* <Footer /> */}
-       </BookmarkProvider>
+        <BookmarkProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </BookmarkProvider>
       </body>
     </html>
   );

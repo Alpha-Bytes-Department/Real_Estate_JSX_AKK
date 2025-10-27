@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CheckYourInboxPage() {
     return (
-        <div className="w-full h-screen flex flex-col items-center justify-center gap-6 text-center">
+        <div className="w-full h-screen flex flex-col items-center justify-center px-5 gap-6 text-center">
             <div className="w-15 h-15 rounded-full bg-[#DCFCE7] relative">
                 <Image src="/check.svg" alt="check-mark" fill />
             </div>

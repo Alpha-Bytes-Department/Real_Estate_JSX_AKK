@@ -1,17 +1,27 @@
 "use client";
-import { APIProvider, Map, Marker, InfoWindow, AdvancedMarker } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  Map,
+  Marker,
+  InfoWindow,
+  AdvancedMarker,
+} from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { showCustomSwal } from "@/components/ui/CustomSwal";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { CiBookmark, CiSearch } from "react-icons/ci";
-import PropertyPopUP from "@/myComponents/PropertyPopUP/PropertyPopUp";
-import AccountPopUP from "@/myComponents/AccountPopUp/AccountPopUP";
-import ZoningPopUp from "@/myComponents/ZoningPopUp/ZoningPopUp";
+// import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
+import AccountPopUP from "@/components/features/AccountPopUp/AccountPopUP";
+import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
+import { FaSearch } from "react-icons/fa";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [account, setAccount] = useState(false);
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
@@ -28,7 +38,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
-  const [rootDatas,setRootDatas]=useState([]);
+  const [rootDatas, setRootDatas] = useState([]);
 
   function handleAccount() {
     setAccount(!account);
@@ -36,7 +46,10 @@ export default function Dashboard() {
 
   const handleFetchdata = async () => {
     try {
-      const res = await fetch("http://10.10.12.51:4000/api/v1/realstate/listings/");
+      console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+      const res = await fetch(
+        "http://10.10.12.51:4000/api/v1/realstate/listings/"
+      );
       const datas = await res.json();
       //const results = Array.isArray(datas?.results) ? datas.results : [];
       setProperties(datas);
@@ -53,8 +66,37 @@ export default function Dashboard() {
       console.error("Error fetching properties:", err);
     }
   };
+   const user = JSON.parse(localStorage.getItem("auth_user"));
+   const name = user?.name || "User";
+   const imageUrl = user?.profile_pic.startsWith("http")
+     ? user.profile_pic
+     : `http://10.10.12.51:4000${user?.profile_pic}`;
 
   useEffect(() => {
+    // Client-side guard: if no auth info in localStorage, show swal then redirect to sign-in
+    const user =
+      typeof window !== "undefined" ? localStorage.getItem("auth_user") : null;
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
+    if (!user || !token) {
+      (async () => {
+        await showCustomSwal({
+          icon: "warning",
+          title: "Login required",
+          text: "Please sign in to access the dashboard.",
+          confirmButtonText: "OK",
+        });
+        router.push(
+          `/sign-in?loginRequired=1&redirect=${encodeURIComponent(
+            "/dashboard"
+          )}`
+        );
+      })();
+      return;
+    }
+
     handleFetchdata();
   }, []);
 
@@ -182,153 +224,163 @@ export default function Dashboard() {
     <div>
       <div className="w-full h-screen fixed">
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
-          {mapCenter && typeof mapCenter.lat === "number" && typeof mapCenter.lng === "number" && (
-            <Map
-              mapId="DEMO_MAP_ID"
-              style={{ borderRadius: "20px" }}
-              defaultZoom={12}
-              defaultCenter={mapCenter}
-              gestureHandling={"greedy"}
-              disableDefaultUI
-            >
-              {properties?.map((property) => {
-                const lat = Number(property.latitude);
-                const lng = Number(property.longitude);
-                if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+          {mapCenter &&
+            typeof mapCenter.lat === "number" &&
+            typeof mapCenter.lng === "number" && (
+              <Map
+                mapId="DEMO_MAP_ID"
+                style={{ borderRadius: "20px" }}
+                defaultZoom={12}
+                defaultCenter={mapCenter}
+                gestureHandling={"greedy"}
+                disableDefaultUI
+              >
+                {properties?.map((property) => {
+                  const lat = Number(property.latitude);
+                  const lng = Number(property.longitude);
+                  if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
 
-                return (
-                  <AdvancedMarker
-                    key={property.id}
-                    position={{ lat, lng }}
-                    onClick={() => setSelectedProperty(property)}
+                  return (
+                    <AdvancedMarker
+                      key={property.id}
+                      position={{ lat, lng }}
+                      onClick={() => setSelectedProperty(property)}
+                    >
+                      <div
+                        className="bg-white border-2 border-blue-600 rounded px-1 shadow-lg hover:bg-blue-600 hover:text-white 
+                      transition-colors cursor-pointer"
+                      >
+                        <span className="font-bold text-sm whitespace-nowrap">
+                          ${property.price / 1000}K
+                        </span>
+                      </div>
+                    </AdvancedMarker>
+
+                    // <Marker
+                    //   key={property.id}
+                    //   position={{ lat, lng }}
+                    //   icon={{
+                    //     url: "/fa-circle.svg",
+                    //     scaledSize: new google.maps.Size(15, 15),
+                    //     anchor: new google.maps.Point(20, 40),
+                    //   }}
+                    //   onClick={() => setSelectedProperty(property)}
+                    // />
+                  );
+                })}
+
+                {selectedProperty && (
+                  <InfoWindow
+                    position={{
+                      lat: Number(selectedProperty.latitude),
+                      lng: Number(selectedProperty.longitude),
+                    }}
+                    onCloseClick={() => setSelectedProperty(null)}
+                    options={{
+                      pixelOffset: new google.maps.Size(0, 0), // removes offset
+                      //;disableAutoPan: true,
+                      backgroundColor: "transparent",
+                    }}
+                    className=""
                   >
                     <div
-                      className="bg-white border-2 border-blue-600 rounded px-1 shadow-lg hover:bg-blue-600 hover:text-white 
-                      transition-colors cursor-pointer"
+                      onClick={() => {
+                        setSelectedProperty(selectedProperty);
+                        setBigPopUpMounted(true);
+                        requestAnimationFrame(() => setBigPopUp(true));
+                      }}
+                      style={{
+                        margin: 0,
+                        padding: 0,
+                        overflow: "hidden",
+                      }}
+                      className="w-full max-w-[250px] h-[250px] cursor-pointer"
                     >
-                      <span className="font-bold text-sm whitespace-nowrap">
-                        ${property.price / 1000}K
-                      </span>
+                      <div className="w-full h-[60%] relative">
+                        <Image
+                          src={selectedProperty.image || "/placeholder.png"}
+                          alt="property-image"
+                          fill
+                          className="object-cover"
+                        />
+                        {/* Custom close button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedProperty(null);
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white font-black w-6 h-6 
+                      rounded-full text-xs flex items-center justify-center cursor-pointer transition"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div className="w-full h-[40%] p-2">
+                        <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
+                          ${selectedProperty.price}
+                        </h1>
+                        <p className="font-poppins text-[#000000] text-sm mt-1">
+                          {selectedProperty.beds} beds |{" "}
+                          {selectedProperty.baths} baths
+                        </p>
+                        <p className="font-poppins text-[#000000] text-sm truncate">
+                          {selectedProperty.details}
+                        </p>
+                        <p className="font-poppins text-[#000000] text-sm mt-1">
+                          {selectedProperty.address.street},{" "}
+                          {selectedProperty.address.city},{" "}
+                          {selectedProperty.address.state}
+                        </p>
+                      </div>
                     </div>
-                  </AdvancedMarker>
-
-                  // <Marker
-                  //   key={property.id}
-                  //   position={{ lat, lng }}
-                  //   icon={{
-                  //     url: "/fa-circle.svg",
-                  //     scaledSize: new google.maps.Size(15, 15),
-                  //     anchor: new google.maps.Point(20, 40),
-                  //   }}
-                  //   onClick={() => setSelectedProperty(property)}
-                  // />
-                );
-              })}
-
-              {selectedProperty && (
-                <InfoWindow
-                  position={{
-                    lat: Number(selectedProperty.latitude),
-                    lng: Number(selectedProperty.longitude),
-                  }}
-                  onCloseClick={() => setSelectedProperty(null)}
-                  options={{
-                    pixelOffset: new google.maps.Size(0, 0), // removes offset
-                    //;disableAutoPan: true,
-                    backgroundColor: "transparent",
-                  }}
-                  className=""
-                >
-                  <div
-                    onClick={() => {
-                      setSelectedProperty(selectedProperty);
-                      setBigPopUpMounted(true);
-                      requestAnimationFrame(() => setBigPopUp(true));
-                    }}
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      overflow: "hidden",
-                    }}
-                    className="w-full max-w-[250px] h-[250px] cursor-pointer"
-                  >
-                    <div className="w-full h-[60%] relative">
-                      <Image
-                        src={selectedProperty.image || "/placeholder.png"}
-                        alt="property-image"
-                        fill
-                        className="object-cover"
-                      />
-                      {/* Custom close button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProperty(null);
-                        }}
-                        className="absolute top-2 right-2 bg-red-500 text-white font-black w-6 h-6 
-                      rounded-full text-xs flex items-center justify-center cursor-pointer transition">
-                        ✕
-                      </button>
-                    </div>
-                    <div className="w-full h-[40%] p-2">
-                      <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                        ${selectedProperty.price}
-                      </h1>
-                      <p className="font-poppins text-[#000000] text-sm mt-1">
-                        {selectedProperty.beds} beds | {selectedProperty.baths} baths
-                      </p>
-                      <p className="font-poppins text-[#000000] text-sm truncate">
-                        {selectedProperty.details}
-                      </p>
-                      <p className="font-poppins text-[#000000] text-sm mt-1">
-                        {selectedProperty.address.street}, {selectedProperty.address.city},{" "}
-                        {selectedProperty.address.state}
-                      </p>
-                    </div>
-                  </div>
-                </InfoWindow>
-              )}
-            </Map>
-          )}
+                  </InfoWindow>
+                )}
+              </Map>
+            )}
         </APIProvider>
 
-        <div className="absolute top-1 right-8">
-          <p className="text-black font-poppins">Maya</p>
+        <div className="absolute top-1 hidden lg:block right-8">
+          <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">{name}</p>
         </div>
 
-        <div className="absolute top-8 w-full flex justify-between">
+        <div className="absolute top-8 px-2 w-full flex justify-between">
           <div
-            className="flex justify-between items-center py-5 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
+            className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
                 ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
           >
-            <CiSearch className="text-white text-2xl" />
+            
             <input
               className="text-white px-3 focus:outline-0 bg-transparent w-full"
-              placeholder="Search by address city or neighborhood"
+              placeholder="Search by address city "
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleSearchKeyPress}
             />
-            <div className="w-full max-w-[80px]">
+            <div className="w-8 lg:max-w-[80px]">
               <Button
                 onClick={handleSearch}
                 disabled={isSearching}
-                className="w-full !h-[30px] font-poppins text-base cursor-pointer 
+                className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
                             hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSearching ? "..." : "Search"}
+                {isSearching ? "..." : <FaSearch/>}
               </Button>
             </div>
           </div>
 
           <div className="hidden lg:block">
-            <Image src="/HomePageLogo.svg" alt="1st_page" width={200} height={100} />
+            <Image
+              src="/HomePageLogo.svg"
+              alt="1st_page"
+              width={200}
+              height={100}
+            />
           </div>
 
-          <div className="w-12 h-12 relative mr-8">
+          <div className="w-12 h-12 relative lg:mr-8">
             <button className="cursor-pointer" onClick={handleAccount}>
               <Image
-                src="/User.jpg"
+                src={imageUrl}
                 alt="user"
                 fill
                 className="rounded-full object-cover ring-3 ring-[#00308F]"
@@ -347,7 +399,7 @@ export default function Dashboard() {
             </button>
           </Link>
           <button
-            onClick={()=>{
+            onClick={() => {
               openSmallPopUp();
               setProperties(rootDatas);
             }}
@@ -373,12 +425,18 @@ export default function Dashboard() {
         <div
           ref={smallpopupRef}
           className={`fixed bottom-20 left-2/4 transform -translate-x-1/2 z-50
-            transition-all duration-300 ease-out ${smallPopUp
-              ? "opacity-100 scale-100 translate-y-0"
-              : "opacity-0 scale-95 translate-y-2"
+            transition-all duration-300 ease-out ${
+              smallPopUp
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-95 translate-y-2"
             }`}
         >
-          <ZoningPopUp properties={properties} setProperties={setProperties} setSmallPopUp={setSmallPopUp} rootData={properties}/>
+          <ZoningPopUp
+            properties={properties}
+            setProperties={setProperties}
+            setSmallPopUp={setSmallPopUp}
+            rootData={properties}
+          />
         </div>
       )}
 
@@ -386,8 +444,9 @@ export default function Dashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 transition-all">
           <div
             ref={bigpopupRef}
-            className={`bg-white rounded-lg w-full max-w-[850px] h-[90vh] overflow-hidden shadow-lg transition-transform duration-300 ease-out ${bigPopUp ? "scale-100" : "scale-95"
-              }`}
+            className={`bg-white rounded-lg w-full max-w-[850px] h-[90vh] overflow-hidden shadow-lg transition-transform duration-300 ease-out ${
+              bigPopUp ? "scale-100" : "scale-95"
+            }`}
           >
             <div className="w-full h-full relative">
               <iframe
@@ -398,10 +457,11 @@ export default function Dashboard() {
 
               {/* ✅ Bookmark Button on Modal */}
               <Button
-                className={`absolute top-3 left-3 border-2 rounded-none text-lg cursor-pointer z-50 ${bookmarks.some((i) => i.id === selectedProperty?.id)
-                  ? "bg-[#3366CC] text-white hover:bg-[#3366CC] hover:text-white"
-                  : "bg-white text-black hover:bg-gray-100 hover:text-black"
-                  }`}
+                className={`absolute top-3 left-3 border-2 rounded-none text-lg cursor-pointer z-50 ${
+                  bookmarks.some((i) => i.id === selectedProperty?.id)
+                    ? "bg-[#3366CC] text-white hover:bg-[#3366CC] hover:text-white"
+                    : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                }`}
                 variant="ghost"
                 onClick={() => toggleBookmark(selectedProperty)}
               >

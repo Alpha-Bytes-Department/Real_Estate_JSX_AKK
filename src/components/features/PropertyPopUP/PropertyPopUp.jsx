@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
-export default function PropertyDetails() {
+export default function PropertyPopUP({ setBigPopUp }) {
   const [showMore, setShowMore] = useState(false);
 
   function handleShowMore() {
@@ -57,14 +57,20 @@ export default function PropertyDetails() {
   }
 
   return (
-    <div className="min-h-screen p-3 lg:p-8">
+    <div className="p-3 lg:p-8 mx-10">
       <div className="sticky top-0 z-50 bg-white py-5">
         <div className="w-1/2 flex justify-between">
           <div className="flex">
-            <ChevronLeft />
-            <Link href="/dashboard" className="font-poppins">
-              Back to search
-            </Link>
+            <div
+              onClick={() => setBigPopUp(false)}
+              className="flex gap-5 items-center cursor-pointer bg-black text-white font-poppins rounded-lg px-3 transition-transform duration-200 ease-in-out 
+               active:scale-95"
+            >
+              <ChevronLeft />
+              <p>Back to search</p>
+            </div>
+            {/* <ChevronLeft />
+                        <Link href="/dashboard" className="font-poppins">Back to search</Link> */}
           </div>
           <Image
             src="/HomePageLogo.svg"
