@@ -1,3 +1,4 @@
+import CustomSwal, { showCustomSwal } from "@/components/ui/CustomSwal";
 import { api, setAuthHeader, clearAuthHeader, BASE_URL } from "./apiClient";
 
 export const storageKeys = {
@@ -75,6 +76,10 @@ export function clearAuth() {
     removeCookie(storageKeys.user);
 
     clearAuthHeader();
+    showCustomSwal({
+      icon: "success",
+      title: "Logged out successfully",
+    });
     window.location.href = "/sign-in"; // Redirect to sign-in page
   } catch (err) {
     console.error("clearAuth error:", err);

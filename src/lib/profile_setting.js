@@ -24,7 +24,7 @@ const getProfileData = async () => {
   console.log("getProfileData called");
   const resp = await api.get("/user/profile/");
   console.log("getProfileData response data:", resp.data);
-  localStorage.setItem("user", JSON.stringify(resp.data));
+  localStorage.setItem("auth_user", JSON.stringify(resp.data));
   return resp.data;
 }
 

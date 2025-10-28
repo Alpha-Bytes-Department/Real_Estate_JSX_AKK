@@ -29,10 +29,10 @@ export default function SavedProperties() {
             Manage your saved property listings and track their details
           </p>
         </div>
-        <select name="" id="" className="border border-gray-200 py-2 px-4">
+        {/* <select name="" id="" className="border border-gray-200 py-2 px-4">
           <option value="low-to-high">Low to High</option>
           <option value="high-to-low">High to Low</option>
-        </select>
+        </select> */}
       </div>
 
       <div className="lg:w-7xl mx-auto mt-8 px-2">

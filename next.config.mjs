@@ -10,8 +10,16 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "10.10.12.51",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "maps.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // optional: for Google profile images
+      },
     ],
   },
-}
+};
 export default nextConfig

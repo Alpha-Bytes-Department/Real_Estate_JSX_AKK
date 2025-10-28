@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import  { showCustomSwal } from '@/components/ui/CustomSwal';
 import { Label } from '@/components/ui/label';
 import { clearAuth } from '@/lib/auth';
 import Image from 'next/image';
@@ -110,7 +111,20 @@ const AccountPopUP = () => {
         
         <div className="w-full">
           <Button
-            onClick={() => clearAuth()}
+            onClick={() => {
+              showCustomSwal({
+                title: "Are you sure you want to logout?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, logout",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  clearAuth();                  
+                }
+              });
+            }}
             className="w-full flex items-center justify-center 
                                     cursor-pointer bg-[#D9D9D9] hover:bg-[#D9D9D9]"
           >
@@ -124,7 +138,7 @@ const AccountPopUP = () => {
           </Button>
         </div>
         <dialog id="my_modal_3" className="modal">
-          <div className="modal-box ">
+          <div className="modal-box bg-white">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

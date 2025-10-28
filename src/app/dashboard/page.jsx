@@ -19,6 +19,7 @@ import AccountPopUP from "@/components/features/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
 import { FaSearch } from "react-icons/fa";
+import { FaUser } from "react-icons/fa6";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function Dashboard() {
       );
       const datas = await res.json();
       //const results = Array.isArray(datas?.results) ? datas.results : [];
+      console.log("Fetched properties:", datas);
       setProperties(datas);
       setRootDatas(datas);
       if (datas.length > 0) {
@@ -66,11 +68,17 @@ export default function Dashboard() {
       console.error("Error fetching properties:", err);
     }
   };
-   const user = JSON.parse(localStorage.getItem("auth_user"));
-   const name = user?.name || "User";
-   const imageUrl = user?.profile_pic.startsWith("http")
-     ? user.profile_pic
-     : `http://10.10.12.51:4000${user?.profile_pic}`;
+
+  const user =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("auth_user") || "null")
+      : null;
+  const name = user?.name || "User";
+  const imageUrl = user?.profile_pic
+    ? user?.profile_pic?.startsWith("http")
+      ? user.profile_pic
+      : `http://10.10.12.51:4000${user?.profile_pic}`
+    : null;
 
   useEffect(() => {
     // Client-side guard: if no auth info in localStorage, show swal then redirect to sign-in
@@ -281,7 +289,7 @@ export default function Dashboard() {
                       //;disableAutoPan: true,
                       backgroundColor: "transparent",
                     }}
-                    className=""
+                    className="pt--1"
                   >
                     <div
                       onClick={() => {
@@ -294,14 +302,14 @@ export default function Dashboard() {
                         padding: 0,
                         overflow: "hidden",
                       }}
-                      className="w-full max-w-[250px] h-[250px] cursor-pointer"
+                      className="w-full max-w-[350px] h-[250px] cursor-pointer"
                     >
-                      <div className="w-full h-[60%] relative">
+                      <div className=" h-[60%] relative">
                         <Image
                           src={selectedProperty.image || "/placeholder.png"}
                           alt="property-image"
                           fill
-                          className="object-cover"
+                          className="object-cover mx-auto px-3 rounded-2xl"
                         />
                         {/* Custom close button */}
                         <button
@@ -309,7 +317,7 @@ export default function Dashboard() {
                             e.stopPropagation();
                             setSelectedProperty(null);
                           }}
-                          className="absolute top-2 right-2 bg-red-500 text-white font-black w-6 h-6 
+                          className="absolute top-2 right-3 shadow-2xl bg-red-500 text-white font-black w-6 h-6 
                       rounded-full text-xs flex items-center justify-center cursor-pointer transition"
                         >
                           ✕
@@ -340,15 +348,16 @@ export default function Dashboard() {
         </APIProvider>
 
         <div className="absolute top-1 hidden lg:block right-8">
-          <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">{name}</p>
+          <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">
+            {name}
+          </p>
         </div>
 
-        <div className="absolute top-8 px-2 w-full flex justify-between">
+        <div className="absolute top-8 px-2 w-full  flex justify-between">
           <div
             className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
                 ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
           >
-            
             <input
               className="text-white px-3 focus:outline-0 bg-transparent w-full"
               placeholder="Search by address city "
@@ -363,7 +372,7 @@ export default function Dashboard() {
                 className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
                             hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSearching ? "..." : <FaSearch/>}
+                {isSearching ? "..." : <FaSearch />}
               </Button>
             </div>
           </div>
@@ -377,14 +386,22 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="w-12 h-12 relative lg:mr-8">
+          <div className="size-12 relative lg:mr-8">
             <button className="cursor-pointer" onClick={handleAccount}>
-              <Image
-                src={imageUrl}
-                alt="user"
-                fill
-                className="rounded-full object-cover ring-3 ring-[#00308F]"
-              />
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt="user"
+                
+                  fill
+                  className="rounded-full object-cover ring-3 ring-[#00308F] w-12 h-12"
+                />
+              ) : (
+                <FaUser
+                  size={20}
+                  className="text-[#00308F] cursor-pointer ring-2 rounded-full size-8 p-1"
+                />
+              )}
             </button>
           </div>
         </div>
@@ -465,6 +482,7 @@ export default function Dashboard() {
                 variant="ghost"
                 onClick={() => toggleBookmark(selectedProperty)}
               >
+                {/* TODO: Update the api call */}
                 <CiBookmark />
               </Button>
 
