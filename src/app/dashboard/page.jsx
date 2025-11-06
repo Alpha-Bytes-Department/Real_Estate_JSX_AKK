@@ -20,6 +20,8 @@ import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
 import { FaSearch } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
+import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
+import { getProperties } from "@/lib/property";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -47,13 +49,7 @@ export default function Dashboard() {
 
   const handleFetchdata = async () => {
     try {
-      console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
-      const res = await fetch(
-        "http://10.10.12.51:4000/api/v1/realstate/listings/"
-      );
-      const datas = await res.json();
-      //const results = Array.isArray(datas?.results) ? datas.results : [];
-      console.log("Fetched properties:", datas);
+      const datas = await getProperties();
       setProperties(datas);
       setRootDatas(datas);
       if (datas.length > 0) {
@@ -77,7 +73,7 @@ export default function Dashboard() {
   const imageUrl = user?.profile_pic
     ? user?.profile_pic?.startsWith("http")
       ? user.profile_pic
-      : `http://10.10.12.51:4000${user?.profile_pic}`
+      : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${user?.profile_pic}`
     : null;
 
   useEffect(() => {
@@ -109,26 +105,103 @@ export default function Dashboard() {
   }, []);
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      // If search is empty, show all properties
+      setProperties(rootDatas);
+      return;
+    }
+
     setIsSearching(true);
     try {
-      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-        searchQuery
-      )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-      const response = await fetch(geocodeUrl);
-      const data = await response.json();
-      if (data.status === "OK" && data.results.length > 0) {
-        const location = data.results[0].geometry.location;
-        setMapCenter({ lat: location.lat, lng: location.lng });
+      // First try to search within existing properties by address
+      const localMatches = rootDatas.filter((property) => {
+        const fullAddress =
+          `${property.address.street}, ${property.address.city}, ${property.address.state}`.toLowerCase();
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          fullAddress.includes(searchLower) ||
+          property.address.city.toLowerCase().includes(searchLower) ||
+          property.address.state.toLowerCase().includes(searchLower) ||
+          property.address.street.toLowerCase().includes(searchLower) ||
+          property.address.zipcode.includes(searchQuery)
+        );
+      });
+
+      if (localMatches.length > 0) {
+        console.log("Found local matches:", localMatches);
+        setProperties(localMatches);
+
+        // Update map center to first match
+        const firstMatch = localMatches[0];
+        const lat = Number(firstMatch.latitude);
+        const lng = Number(firstMatch.longitude);
+        if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+          setMapCenter({ lat, lng });
+        }
       } else {
-        alert("Location not found. Please try again.");
+        // If no local matches, use geocoding to center map on searched location
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          searchQuery
+        )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+        const response = await fetch(geocodeUrl);
+        const data = await response.json();
+        console.log("Geocode response data:", data);
+
+        if (data.status === "OK" && data.results.length > 0) {
+          const location = data.results[0].geometry.location;
+          setMapCenter({ lat: location.lat, lng: location.lng });
+
+          // Filter properties within a radius of the searched location
+          const radiusKm = 50; // 50km radius
+          const nearbyProperties = rootDatas.filter((property) => {
+            const distance = calculateDistance(
+              location.lat,
+              location.lng,
+              Number(property.latitude),
+              Number(property.longitude)
+            );
+            return distance <= radiusKm;
+          });
+
+          if (nearbyProperties.length > 0) {
+            setProperties(nearbyProperties);
+            console.log(
+              `Found ${nearbyProperties.length} properties within ${radiusKm}km of searched location`
+            );
+          } else {
+            setProperties([]); // No properties found in the area
+            alert(
+              `No properties found near "${searchQuery}". Try a different location.`
+            );
+          }
+        } else {
+          alert("Location not found. Please try again.");
+          setProperties(rootDatas); // Reset to show all properties
+        }
       }
     } catch (error) {
       console.error("Error searching location:", error);
       alert("Error searching location. Please try again.");
+      setProperties(rootDatas); // Reset to show all properties
     } finally {
       setIsSearching(false);
     }
+  };
+
+  // Helper function to calculate distance between two coordinates
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+    return distance;
   };
 
   const handleSearchKeyPress = (e) => {
@@ -136,6 +209,30 @@ export default function Dashboard() {
       handleSearch();
     }
   };
+
+  // ========================= testing function =======================
+  const fetchTesting = async () => {
+    const res = await fetch(
+      "https://cestoid-uncoarsely-kayla.ngrok-free.dev/api/offers/categories/"
+    );
+    // const data = await res.json();
+    console.log("Testing API response:", res);
+  };
+
+  // Real-time search as user types (with debounce)
+  useEffect(() => {
+    // fetchTesting();
+    const timeoutId = setTimeout(() => {
+      if (searchQuery.trim()) {
+        handleSearch();
+      } else {
+        // Reset to show all properties when search is cleared
+        setProperties(rootDatas);
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, rootDatas]);
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
@@ -172,14 +269,6 @@ export default function Dashboard() {
     setTimeout(() => {
       setSmallPopUpMounted(false);
     }, 300);
-  };
-
-  const openBigPopUp = (property) => {
-    setSelectedProperty(property);
-    setBigPopUpMounted(true);
-    requestAnimationFrame(() => {
-      setBigPopUp(true);
-    });
   };
 
   const closeBigPopUp = () => {
@@ -392,7 +481,6 @@ export default function Dashboard() {
                 <Image
                   src={imageUrl}
                   alt="user"
-                
                   fill
                   className="rounded-full object-cover ring-3 ring-[#00308F] w-12 h-12"
                 />
@@ -418,7 +506,7 @@ export default function Dashboard() {
           <button
             onClick={() => {
               openSmallPopUp();
-              setProperties(rootDatas);
+              // Don't reset properties here, let the filter work on current data
             }}
             className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
               cursor-pointer"
@@ -452,53 +540,22 @@ export default function Dashboard() {
             properties={properties}
             setProperties={setProperties}
             setSmallPopUp={setSmallPopUp}
-            rootData={properties}
+            rootData={rootDatas}
           />
         </div>
       )}
 
       {bigPopUpMounted && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 transition-all">
-          <div
-            ref={bigpopupRef}
-            className={`bg-white rounded-lg w-full max-w-[850px] h-[90vh] overflow-hidden shadow-lg transition-transform duration-300 ease-out ${
-              bigPopUp ? "scale-100" : "scale-95"
+        <div
+          className={`fixed inset-0 z-50 bg-transparent overflow-y-auto
+            transition-all duration-300 ease-out ${
+              bigPopUp ? "opacity-100 scale-100" : "opacity-0 scale-95"
             }`}
-          >
-            <div className="w-full h-full relative">
-              <iframe
-                src={selectedProperty?.url}
-                title="Property Page"
-                className="w-full h-full border-0 rounded-lg"
-              ></iframe>
-
-              {/* ✅ Bookmark Button on Modal */}
-              <Button
-                className={`absolute top-3 left-3 border-2 rounded-none text-lg cursor-pointer z-50 ${
-                  bookmarks.some((i) => i.id === selectedProperty?.id)
-                    ? "bg-[#3366CC] text-white hover:bg-[#3366CC] hover:text-white"
-                    : "bg-white text-black hover:bg-gray-100 hover:text-black"
-                }`}
-                variant="ghost"
-                onClick={() => toggleBookmark(selectedProperty)}
-              >
-                {/* TODO: Update the api call */}
-                <CiBookmark />
-              </Button>
-
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  setBigPopUp(false);
-                  setTimeout(() => setBigPopUpMounted(false), 300);
-                }}
-                className="absolute top-3 right-3 bg-black text-white px-3 py-1 mb-2 rounded-md 
-                hover:bg-gray-800 transition cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
+        >
+          <PropertyPopUP
+            id={selectedProperty?.id}
+            setBigPopUp={setBigPopUpMounted}
+          />
         </div>
       )}
     </div>
