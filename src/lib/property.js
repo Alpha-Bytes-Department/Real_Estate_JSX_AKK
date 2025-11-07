@@ -17,6 +17,10 @@ const getPropertyById = async (id) => {
 }
 
 
+// ========================== get related properties ==========================
+
+
+
 // ========================== Export ==========================
 export {
   getPropertyById, 

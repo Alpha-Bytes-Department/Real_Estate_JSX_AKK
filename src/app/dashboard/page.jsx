@@ -22,6 +22,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
 import { getProperties } from "@/lib/property";
+import { TbMenu } from "react-icons/tb";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -37,6 +38,11 @@ export default function Dashboard() {
   const [smallPopUpMounted, setSmallPopUpMounted] = useState(false);
   const [bigPopUpMounted, setBigPopUpMounted] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+  const [showNotFoundModal, setShowNotFoundModal] = useState(false);
+  const [notFoundMessage, setNotFoundMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -104,8 +110,14 @@ export default function Dashboard() {
     handleFetchdata();
   }, []);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+  // handleSearch now accepts a query and options so callers (submit vs typing) can control behavior
+  const handleSearch = async (
+    query = searchQuery,
+    options = { fromSubmit: false, suppressNotFound: false }
+  ) => {
+    const { fromSubmit, suppressNotFound } = options;
+
+    if (!query || !query.trim()) {
       // If search is empty, show all properties
       setProperties(rootDatas);
       return;
@@ -113,24 +125,23 @@ export default function Dashboard() {
 
     setIsSearching(true);
     try {
+      const searchLower = query.toLowerCase();
+
       // First try to search within existing properties by address
       const localMatches = rootDatas.filter((property) => {
         const fullAddress =
           `${property.address.street}, ${property.address.city}, ${property.address.state}`.toLowerCase();
-        const searchLower = searchQuery.toLowerCase();
         return (
           fullAddress.includes(searchLower) ||
           property.address.city.toLowerCase().includes(searchLower) ||
           property.address.state.toLowerCase().includes(searchLower) ||
           property.address.street.toLowerCase().includes(searchLower) ||
-          property.address.zipcode.includes(searchQuery)
+          (property.address.zipcode || "").includes(query)
         );
       });
 
       if (localMatches.length > 0) {
-        console.log("Found local matches:", localMatches);
         setProperties(localMatches);
-
         // Update map center to first match
         const firstMatch = localMatches[0];
         const lat = Number(firstMatch.latitude);
@@ -138,14 +149,15 @@ export default function Dashboard() {
         if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
           setMapCenter({ lat, lng });
         }
+        // close not-found modal if previously open
+        setShowNotFoundModal(false);
       } else {
         // If no local matches, use geocoding to center map on searched location
         const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          searchQuery
+          query
         )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
         const response = await fetch(geocodeUrl);
         const data = await response.json();
-        console.log("Geocode response data:", data);
 
         if (data.status === "OK" && data.results.length > 0) {
           const location = data.results[0].geometry.location;
@@ -165,23 +177,30 @@ export default function Dashboard() {
 
           if (nearbyProperties.length > 0) {
             setProperties(nearbyProperties);
-            console.log(
-              `Found ${nearbyProperties.length} properties within ${radiusKm}km of searched location`
-            );
+            setShowNotFoundModal(false);
           } else {
             setProperties([]); // No properties found in the area
-            alert(
-              `No properties found near "${searchQuery}". Try a different location.`
-            );
+            if (!suppressNotFound) {
+              setNotFoundMessage(
+                `No properties found near "${query}". Try a different location.`
+              );
+              setShowNotFoundModal(true);
+            }
           }
         } else {
-          alert("Location not found. Please try again.");
+          if (!suppressNotFound) {
+            setNotFoundMessage("Location not found. Please try again.");
+            setShowNotFoundModal(true);
+          }
           setProperties(rootDatas); // Reset to show all properties
         }
       }
     } catch (error) {
       console.error("Error searching location:", error);
-      alert("Error searching location. Please try again.");
+      if (!suppressNotFound) {
+        setNotFoundMessage("Error searching location. Please try again.");
+        setShowNotFoundModal(true);
+      }
       setProperties(rootDatas); // Reset to show all properties
     } finally {
       setIsSearching(false);
@@ -206,25 +225,29 @@ export default function Dashboard() {
 
   const handleSearchKeyPress = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      // explicit submit behavior on Enter
+      handleSearch(searchQuery, { fromSubmit: true, suppressNotFound: false });
     }
   };
 
-  // ========================= testing function =======================
-  const fetchTesting = async () => {
-    const res = await fetch(
-      "https://cestoid-uncoarsely-kayla.ngrok-free.dev/api/offers/categories/"
-    );
-    // const data = await res.json();
-    console.log("Testing API response:", res);
+  const onSearchSubmit = (e) => {
+    e?.preventDefault();
+    // use the latest searchQuery and explicitly show not-found modal when applicable
+    handleSearch(searchQuery, { fromSubmit: true, suppressNotFound: false });
   };
+
+  // ========================= testing function =======================
 
   // Real-time search as user types (with debounce)
   useEffect(() => {
     // fetchTesting();
     const timeoutId = setTimeout(() => {
       if (searchQuery.trim()) {
-        handleSearch();
+        // live-typing search; suppress not-found modal
+        handleSearch(searchQuery, {
+          fromSubmit: false,
+          suppressNotFound: true,
+        });
       } else {
         // Reset to show all properties when search is cleared
         setProperties(rootDatas);
@@ -233,6 +256,11 @@ export default function Dashboard() {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery, rootDatas]);
+
+  // reset to first page whenever property list changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [properties]);
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
@@ -317,210 +345,408 @@ export default function Dashboard() {
     };
   }, [bigPopUp]);
 
+  // Pagination helpers for sidebar
+  const totalPages =
+    properties && properties.length > 0
+      ? Math.ceil(properties.length / itemsPerPage)
+      : 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProperties = properties
+    ? properties.slice(startIndex, endIndex)
+    : [];
+
   return (
-    <div>
-      <div className="w-full h-screen fixed">
-        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
-          {mapCenter &&
-            typeof mapCenter.lat === "number" &&
-            typeof mapCenter.lng === "number" && (
-              <Map
-                mapId="DEMO_MAP_ID"
-                style={{ borderRadius: "20px" }}
-                defaultZoom={12}
-                defaultCenter={mapCenter}
-                gestureHandling={"greedy"}
-                disableDefaultUI
-              >
-                {properties?.map((property) => {
-                  const lat = Number(property.latitude);
-                  const lng = Number(property.longitude);
-                  if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
-
-                  return (
-                    <AdvancedMarker
-                      key={property.id}
-                      position={{ lat, lng }}
-                      onClick={() => setSelectedProperty(property)}
-                    >
-                      <div
-                        className="bg-white border-2 border-blue-600 rounded px-1 shadow-lg hover:bg-blue-600 hover:text-white 
-                      transition-colors cursor-pointer"
-                      >
-                        <span className="font-bold text-sm whitespace-nowrap">
-                          ${property.price / 1000}K
-                        </span>
-                      </div>
-                    </AdvancedMarker>
-
-                    // <Marker
-                    //   key={property.id}
-                    //   position={{ lat, lng }}
-                    //   icon={{
-                    //     url: "/fa-circle.svg",
-                    //     scaledSize: new google.maps.Size(15, 15),
-                    //     anchor: new google.maps.Point(20, 40),
-                    //   }}
-                    //   onClick={() => setSelectedProperty(property)}
-                    // />
-                  );
-                })}
-
-                {selectedProperty && (
-                  <InfoWindow
-                    position={{
-                      lat: Number(selectedProperty.latitude),
-                      lng: Number(selectedProperty.longitude),
-                    }}
-                    onCloseClick={() => setSelectedProperty(null)}
-                    options={{
-                      pixelOffset: new google.maps.Size(0, 0), // removes offset
-                      //;disableAutoPan: true,
-                      backgroundColor: "transparent",
-                    }}
-                    className="pt--1"
+    <div className="w-full h-screen">
+      <div className="flex h-full">
+        <main
+          className={`transition-all duration-300 flex-1 ${
+            rightSidebarOpen ? "lg:w-3/4" : "w-full"
+          }`}
+        >
+          <div className="w-full h-full relative">
+            <APIProvider
+              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
+            >
+              {mapCenter &&
+                typeof mapCenter.lat === "number" &&
+                typeof mapCenter.lng === "number" && (
+                  <Map
+                    mapId="DEMO_MAP_ID"
+                    style={{ borderRadius: "20px" }}
+                    defaultZoom={12}
+                    defaultCenter={mapCenter}
+                    gestureHandling={"greedy"}
+                    disableDefaultUI
                   >
-                    <div
-                      onClick={() => {
-                        setSelectedProperty(selectedProperty);
-                        setBigPopUpMounted(true);
-                        requestAnimationFrame(() => setBigPopUp(true));
-                      }}
-                      style={{
-                        margin: 0,
-                        padding: 0,
-                        overflow: "hidden",
-                      }}
-                      className="w-full max-w-[350px] h-[250px] cursor-pointer"
-                    >
-                      <div className=" h-[60%] relative">
-                        <Image
-                          src={selectedProperty.image || "/placeholder.png"}
-                          alt="property-image"
-                          fill
-                          className="object-cover mx-auto px-3 rounded-2xl"
-                        />
-                        {/* Custom close button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedProperty(null);
-                          }}
-                          className="absolute top-2 right-3 shadow-2xl bg-red-500 text-white font-black w-6 h-6 
-                      rounded-full text-xs flex items-center justify-center cursor-pointer transition"
+                    {properties?.map((property) => {
+                      const lat = Number(property.latitude);
+                      const lng = Number(property.longitude);
+                      if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+
+                      return (
+                        <AdvancedMarker
+                          key={property.id}
+                          position={{ lat, lng }}
+                          onClick={() => setSelectedProperty(property)}
                         >
-                          ✕
-                        </button>
-                      </div>
-                      <div className="w-full h-[40%] p-2">
-                        <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                          ${selectedProperty.price}
-                        </h1>
-                        <p className="font-poppins text-[#000000] text-sm mt-1">
-                          {selectedProperty.beds} beds |{" "}
-                          {selectedProperty.baths} baths
-                        </p>
-                        <p className="font-poppins text-[#000000] text-sm truncate">
-                          {selectedProperty.details}
-                        </p>
-                        <p className="font-poppins text-[#000000] text-sm mt-1">
-                          {selectedProperty.address.street},{" "}
-                          {selectedProperty.address.city},{" "}
-                          {selectedProperty.address.state}
-                        </p>
-                      </div>
-                    </div>
-                  </InfoWindow>
+                          <div
+                            className="bg-white border-2 border-blue-600 rounded px-1 shadow-lg hover:bg-blue-600 hover:text-white 
+                      transition-colors cursor-pointer"
+                          >
+                            <span className="font-bold text-sm whitespace-nowrap">
+                              ${property.price / 1000}K
+                            </span>
+                          </div>
+                        </AdvancedMarker>
+
+                        // <Marker
+                        //   key={property.id}
+                        //   position={{ lat, lng }}
+                        //   icon={{
+                        //     url: "/fa-circle.svg",
+                        //     scaledSize: new google.maps.Size(15, 15),
+                        //     anchor: new google.maps.Point(20, 40),
+                        //   }}
+                        //   onClick={() => setSelectedProperty(property)}
+                        // />
+                      );
+                    })}
+
+                    {selectedProperty && (
+                      <InfoWindow
+                        position={{
+                          lat: Number(selectedProperty.latitude),
+                          lng: Number(selectedProperty.longitude),
+                        }}
+                        onCloseClick={() => setSelectedProperty(null)}
+                        options={{
+                          pixelOffset: new google.maps.Size(0, 0), // removes offset
+                          //;disableAutoPan: true,
+                          backgroundColor: "transparent",
+                        }}
+                        className="pt--1"
+                      >
+                        <div
+                          onClick={() => {
+                            setSelectedProperty(selectedProperty);
+                            setBigPopUpMounted(true);
+                            requestAnimationFrame(() => setBigPopUp(true));
+                          }}
+                          style={{
+                            margin: 0,
+                            padding: 0,
+                            overflow: "hidden",
+                          }}
+                          className="w-full max-w-[350px] h-[250px] cursor-pointer"
+                        >
+                          <div className=" h-[60%] relative">
+                            <Image
+                              src={selectedProperty.image || "/placeholder.png"}
+                              alt="property-image"
+                              fill
+                              className="object-cover mx-auto px-3 rounded-2xl"
+                            />
+                            {/* Custom close button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedProperty(null);
+                              }}
+                              className="absolute top-2 right-3 shadow-2xl bg-red-500 text-white font-black w-6 h-6 
+                      rounded-full text-xs flex items-center justify-center cursor-pointer transition"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <div className="w-full h-[40%] p-2">
+                            <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
+                              ${selectedProperty.price}
+                            </h1>
+                            <p className="font-poppins text-[#000000] text-sm mt-1">
+                              {selectedProperty.beds} beds |{" "}
+                              {selectedProperty.baths} baths
+                            </p>
+                            <p className="font-poppins text-[#000000] text-sm truncate">
+                              {selectedProperty.details}
+                            </p>
+                            <p className="font-poppins text-[#000000] text-sm mt-1">
+                              {selectedProperty.address.street},{" "}
+                              {selectedProperty.address.city},{" "}
+                              {selectedProperty.address.state}
+                            </p>
+                          </div>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </Map>
                 )}
-              </Map>
-            )}
-        </APIProvider>
+            </APIProvider>
 
-        <div className="absolute top-1 hidden lg:block right-8">
-          <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">
-            {name}
-          </p>
-        </div>
+            <div className="absolute top-1 hidden lg:block right-8">
+              <p className="text-black bg-amber-100 px-3 rounded-full py-1 font-poppins">
+                {name}
+              </p>
+            </div>
 
-        <div className="absolute top-8 px-2 w-full  flex justify-between">
-          <div
-            className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
-                ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
-          >
-            <input
-              className="text-white px-3 focus:outline-0 bg-transparent w-full"
-              placeholder="Search by address city "
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleSearchKeyPress}
-            />
-            <div className="w-8 lg:max-w-[80px]">
-              <Button
-                onClick={handleSearch}
-                disabled={isSearching}
-                className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
-                            hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            <div className="absolute top-8 px-2 w-full  flex justify-between">
+              <form
+                onSubmit={onSearchSubmit}
+                className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
+      ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
               >
-                {isSearching ? "..." : <FaSearch />}
-              </Button>
+                <input
+                  className="text-white px-3 focus:outline-0 bg-transparent w-full"
+                  placeholder="Search by address, city"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearchKeyPress}
+                />
+                <div className="w-8 lg:max-w-[80px]">
+                  <Button
+                    type="submit"
+                    disabled={isSearching}
+                    className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
+                              hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSearching ? "..." : <FaSearch />}
+                  </Button>
+                </div>
+              </form>
+
+              <div className="hidden lg:block">
+                <Image
+                  src="/HomePageLogo.svg"
+                  alt="1st_page"
+                  width={200}
+                  height={100}
+                />
+              </div>
+
+              <div className="size-12 relative lg:mr-8">
+                <button className="cursor-pointer" onClick={handleAccount}>
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt="user"
+                      fill
+                      className="rounded-full object-cover ring-3 ring-[#00308F] w-12 h-12"
+                    />
+                  ) : (
+                    <FaUser
+                      size={20}
+                      className="text-[#00308F] cursor-pointer ring-2 rounded-full size-8 p-1"
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className=" ">
+              <TbMenu />
+            </div>
+
+            <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
+              <Link href="/saved-properties">
+                <button
+                  className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
+                cursor-pointer"
+                >
+                  Saved Properties
+                </button>
+              </Link>
+              <button
+                onClick={() => {
+                  openSmallPopUp();
+                  // Don't reset properties here, let the filter work on current data
+                }}
+                className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
+              cursor-pointer"
+              >
+                Zoning Map
+              </button>
+              <Link href="/listings">
+                <button
+                  className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
+                cursor-pointer"
+                >
+                  Listings
+                </button>
+              </Link>
             </div>
           </div>
+        </main>
 
-          <div className="hidden lg:block">
-            <Image
-              src="/HomePageLogo.svg"
-              alt="1st_page"
-              width={200}
-              height={100}
-            />
-          </div>
-
-          <div className="size-12 relative lg:mr-8">
-            <button className="cursor-pointer" onClick={handleAccount}>
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt="user"
-                  fill
-                  className="rounded-full object-cover ring-3 ring-[#00308F] w-12 h-12"
-                />
-              ) : (
-                <FaUser
-                  size={20}
-                  className="text-[#00308F] cursor-pointer ring-2 rounded-full size-8 p-1"
-                />
-              )}
-            </button>
-          </div>
+        {/* Right collapsible sidebar toggle (keeps position over layout) */}
+        <div className="absolute top-40 right-4 z-40 lg:pr-4">
+          <button
+            onClick={() => setRightSidebarOpen((s) => !s)}
+            className="bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center"
+            aria-label="Toggle properties sidebar"
+          >
+            {rightSidebarOpen ? "←" : "→"}
+          </button>
         </div>
 
-        <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
-          <Link href="/saved-properties">
+        {/* Desktop sidebar (part of layout) */}
+        <aside
+          className={`hidden lg:block transition-all duration-300 overflow-auto bg-white ${
+            rightSidebarOpen ? "w-1/4" : "w-0"
+          }`}
+        >
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="font-semibold">Properties</h2>
             <button
-              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
-                cursor-pointer"
+              onClick={() => setRightSidebarOpen(false)}
+              className="text-sm px-2 py-1"
             >
-              Saved Properties
+              Close
             </button>
-          </Link>
-          <button
-            onClick={() => {
-              openSmallPopUp();
-              // Don't reset properties here, let the filter work on current data
-            }}
-            className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
-              cursor-pointer"
-          >
-            Zoning Map
-          </button>
-          <Link href="/listings">
+          </div>
+          <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {paginatedProperties && paginatedProperties.length > 0 ? (
+              paginatedProperties.map((prop) => (
+                <div
+                  key={prop.id}
+                  onClick={() => {
+                    setSelectedProperty(prop);
+                    setRightSidebarOpen(false);
+                    setBigPopUpMounted(true);
+                    requestAnimationFrame(() => setBigPopUp(true));
+                  }}
+                  className="cursor-pointer bg-white shadow rounded-lg overflow-hidden"
+                >
+                  <div className="h-28 w-full relative">
+                    {prop.image ? (
+                      <Image
+                        src={prop.image}
+                        alt="prop-img"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="bg-gray-200 w-full h-full" />
+                    )}
+                  </div>
+                  <div className="p-2">
+                    <h3 className="font-semibold text-sm">${prop.price}</h3>
+                    <p className="text-xs text-gray-600 truncate">
+                      {prop.address?.street}, {prop.address?.city}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-sm text-gray-500">
+                No properties
+              </div>
+            )}
+          </div>
+
+          {/* Pagination controls for desktop sidebar */}
+          {properties && properties.length > itemsPerPage && (
+            <div className="p-4 flex items-center justify-between border-t">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <div className="text-sm">
+                Page {currentPage} of {totalPages}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </aside>
+
+        {/* Mobile overlay sidebar (covers screen) */}
+        <div
+          className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform ${
+            rightSidebarOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="font-semibold">Properties</h2>
             <button
-              className="text-[#ECECEC] bg-[#000000] rounded-md font-poppins px-2 lg:px-5 py-2 
-                cursor-pointer"
+              onClick={() => setRightSidebarOpen(false)}
+              className="text-sm px-2 py-1"
             >
-              Listings
+              Close
             </button>
-          </Link>
+          </div>
+          <div className="p-4 grid grid-cols-1 gap-4">
+            {paginatedProperties && paginatedProperties.length > 0 ? (
+              paginatedProperties.map((prop) => (
+                <div
+                  key={prop.id}
+                  onClick={() => {
+                    setSelectedProperty(prop);
+                    setRightSidebarOpen(false);
+                    setBigPopUpMounted(true);
+                    requestAnimationFrame(() => setBigPopUp(true));
+                  }}
+                  className="cursor-pointer bg-white shadow rounded-lg overflow-hidden"
+                >
+                  <div className="h-40 w-full relative">
+                    {prop.image ? (
+                      <Image
+                        src={prop.image}
+                        alt="prop-img"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="bg-gray-200 w-full h-full" />
+                    )}
+                  </div>
+                  <div className="p-2">
+                    <h3 className="font-semibold text-sm">${prop.price}</h3>
+                    <p className="text-xs text-gray-600 truncate">
+                      {prop.address?.street}, {prop.address?.city}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-sm text-gray-500">
+                No properties
+              </div>
+            )}
+          </div>
+
+          {/* Pagination controls for mobile overlay */}
+          {properties && properties.length > itemsPerPage && (
+            <div className="p-4 flex items-center justify-between border-t">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <div className="text-sm">
+                Page {currentPage} of {totalPages}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
 
         {account && <AccountPopUP />}
@@ -556,6 +782,23 @@ export default function Dashboard() {
             id={selectedProperty?.id}
             setBigPopUp={setBigPopUpMounted}
           />
+        </div>
+      )}
+      {/* Not found modal */}
+      {showNotFoundModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white p-6 rounded shadow-lg max-w-sm">
+            <h3 className="font-semibold mb-2">No results</h3>
+            <p className="text-sm mb-4">{notFoundMessage}</p>
+            <div className="text-right">
+              <button
+                onClick={() => setShowNotFoundModal(false)}
+                className="px-3 py-1 bg-black text-white rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
