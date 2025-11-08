@@ -19,10 +19,17 @@ import AccountPopUP from "@/components/features/AccountPopUp/AccountPopUP";
 import ZoningPopUp from "@/components/features/ZoningPopUp/ZoningPopUp";
 import { BookmarkContext } from "@/providers/BookmarkProvider";
 import { FaSearch } from "react-icons/fa";
-import { FaUser } from "react-icons/fa6";
+import { FaHeart, FaRegHeart, FaUser } from "react-icons/fa6";
 import PropertyPopUP from "@/components/features/PropertyPopUP/PropertyPopUp";
-import { getProperties } from "@/lib/property";
+import {
+  getProperties,
+  postToBookmark,
+  removeFromBookmark,
+} from "@/lib/property";
 import { TbMenu } from "react-icons/tb";
+import { RxCross2 } from "react-icons/rx";
+import { MdOutlineMenuOpen } from "react-icons/md";
+import Swal from "sweetalert2";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -30,7 +37,8 @@ export default function Dashboard() {
   const [smallPopUp, setSmallPopUp] = useState(false);
   const [bigPopUp, setBigPopUp] = useState(false);
 
-  const { bookmarks, toggleBookmark } = useContext(BookmarkContext);
+  const { bookmarks, toggleBookmark, removeBookmark } =
+    useContext(BookmarkContext);
 
   const [properties, setProperties] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 40.4387, lng: -79.9972 });
@@ -281,10 +289,6 @@ export default function Dashboard() {
     },
   });
 
-  const onSubmit = (datas) => {
-    console.log("Form datas:", datas);
-  };
-
   const openSmallPopUp = () => {
     setSmallPopUpMounted(true);
     requestAnimationFrame(() => {
@@ -345,7 +349,6 @@ export default function Dashboard() {
     };
   }, [bigPopUp]);
 
-  // Pagination helpers for sidebar
   const totalPages =
     properties && properties.length > 0
       ? Math.ceil(properties.length / itemsPerPage)
@@ -355,6 +358,117 @@ export default function Dashboard() {
   const paginatedProperties = properties
     ? properties.slice(startIndex, endIndex)
     : [];
+
+  const handleFavoriteToggle = async (propertyId, is_favorite) => {
+    // Optimistically update local state so UI (heart icons) reflects change immediately
+    let updatedProp;
+    try {
+      setProperties((prev) =>
+        prev.map((p) =>
+          p.id === propertyId ? { ...p, is_favorite: !is_favorite } : p
+        )
+      );
+      setRootDatas((prev) =>
+        prev.map((p) =>
+          p.id === propertyId ? { ...p, is_favorite: !is_favorite } : p
+        )
+      );
+      if (selectedProperty?.id === propertyId) {
+        setSelectedProperty((prev) =>
+          prev ? { ...prev, is_favorite: !is_favorite } : prev
+        );
+      }
+
+      // Prepare an updated property object for context updates/reverts
+      updatedProp = properties?.find((p) => p.id === propertyId) ||
+        selectedProperty || { id: propertyId };
+
+      // Optimistically update BookmarkContext so other components update immediately
+      try {
+        if (typeof toggleBookmark === "function") {
+          toggleBookmark({ ...updatedProp, is_favorite: !is_favorite });
+        }
+      } catch (e) {
+        console.warn("BookmarkContext optimistic update failed:", e);
+      }
+
+      let response;
+      if (is_favorite) {
+        response = await removeFromBookmark(propertyId);
+      } else {
+        response = await postToBookmark(propertyId);
+      }
+
+      console.log("response from bookmark api ", response);
+
+      if (response && (response.status === 200 || response.status === 201)) {
+        showCustomSwal({
+          icon: "success",
+          title: "Success",
+          text: is_favorite ? "Removed from favorites" : "Added to favorites",
+          confirmButtonText: "OK",
+        });
+      } else {
+        // Revert optimistic update on failure
+        setProperties((prev) =>
+          prev.map((p) => (p.id === propertyId ? { ...p, is_favorite } : p))
+        );
+        setRootDatas((prev) =>
+          prev.map((p) => (p.id === propertyId ? { ...p, is_favorite } : p))
+        );
+        if (selectedProperty?.id === propertyId) {
+          setSelectedProperty((prev) =>
+            prev ? { ...prev, is_favorite } : prev
+          );
+        }
+        // revert BookmarkContext change
+        try {
+          if (typeof toggleBookmark === "function") {
+            // toggle again to revert optimistic change
+            toggleBookmark({ ...updatedProp, is_favorite: !is_favorite });
+          }
+        } catch (e) {
+          console.warn("Could not revert BookmarkContext after failure:", e);
+        }
+        showCustomSwal({
+          icon: "error",
+          title: "Error",
+          text: "Could not update favorite. Please try again.",
+          confirmButtonText: "OK",
+        });
+      }
+
+      // Refresh data in background to ensure canonical state (non-blocking)
+      handleFetchdata();
+      // keep the popup open and updated instead of closing it
+    } catch (err) {
+      console.error("Error toggling favorite:", err);
+      // revert optimistic update
+      setProperties((prev) =>
+        prev.map((p) => (p.id === propertyId ? { ...p, is_favorite } : p))
+      );
+      setRootDatas((prev) =>
+        prev.map((p) => (p.id === propertyId ? { ...p, is_favorite } : p))
+      );
+      if (selectedProperty?.id === propertyId) {
+        setSelectedProperty((prev) => (prev ? { ...prev, is_favorite } : prev));
+      }
+      // revert BookmarkContext optimistic update if possible
+      try {
+        if (typeof toggleBookmark === "function" && updatedProp) {
+          toggleBookmark({ ...updatedProp, is_favorite: !is_favorite });
+        }
+      } catch (e) {
+        console.warn("Could not revert BookmarkContext after error:", e);
+      }
+      showCustomSwal({
+        icon: "error",
+        title: "Error",
+        text: "Network error. Please try again.",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
   return (
     <div className="w-full h-screen">
@@ -430,7 +544,7 @@ export default function Dashboard() {
                         <div
                           onClick={() => {
                             setSelectedProperty(selectedProperty);
-                            setBigPopUpMounted(true);
+
                             requestAnimationFrame(() => setBigPopUp(true));
                           }}
                           style={{
@@ -445,9 +559,10 @@ export default function Dashboard() {
                               src={selectedProperty.image || "/placeholder.png"}
                               alt="property-image"
                               fill
+                              onClick={() => setBigPopUpMounted(true)}
                               className="object-cover mx-auto px-3 rounded-2xl"
                             />
-                            {/* Custom close button */}
+
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -460,21 +575,47 @@ export default function Dashboard() {
                             </button>
                           </div>
                           <div className="w-full h-[40%] p-2">
-                            <h1 className="font-semibold font-poppins text-[#000000] text-2xl">
-                              ${selectedProperty.price}
-                            </h1>
-                            <p className="font-poppins text-[#000000] text-sm mt-1">
-                              {selectedProperty.beds} beds |{" "}
-                              {selectedProperty.baths} baths
-                            </p>
-                            <p className="font-poppins text-[#000000] text-sm truncate">
-                              {selectedProperty.details}
-                            </p>
-                            <p className="font-poppins text-[#000000] text-sm mt-1">
-                              {selectedProperty.address.street},{" "}
-                              {selectedProperty.address.city},{" "}
-                              {selectedProperty.address.state}
-                            </p>
+                            <div className="flex justify-between items-center pr-2">
+                              {" "}
+                              <h1
+                                onClick={() => setBigPopUpMounted(true)}
+                                className="font-semibold font-poppins text-[#000000] text-2xl"
+                              >
+                                ${selectedProperty.price}
+                              </h1>
+                              <button
+                                onClick={() =>
+                                  handleFavoriteToggle(
+                                    selectedProperty.id,
+                                    bookmarks?.some(
+                                      (b) => b.id === selectedProperty.id
+                                    )
+                                  )
+                                }
+                              >
+                                {bookmarks?.some(
+                                  (b) => b.id === selectedProperty.id
+                                ) ? (
+                                  <FaHeart size={24} />
+                                ) : (
+                                  <FaRegHeart size={24} />
+                                )}
+                              </button>
+                            </div>
+                            <div onClick={() => setBigPopUpMounted(true)}>
+                              <p className="font-poppins text-[#000000] text-sm mt-1">
+                                {selectedProperty.beds} beds |{" "}
+                                {selectedProperty.baths} baths
+                              </p>
+                              <p className="font-poppins text-[#000000] text-sm truncate">
+                                {selectedProperty.details}
+                              </p>
+                              <p className="font-poppins text-[#000000] text-sm mt-1">
+                                {selectedProperty.address.street},{" "}
+                                {selectedProperty.address.city},{" "}
+                                {selectedProperty.address.state}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </InfoWindow>
@@ -490,29 +631,42 @@ export default function Dashboard() {
             </div>
 
             <div className="absolute top-8 px-2 w-full  flex justify-between">
-              <form
-                onSubmit={onSearchSubmit}
-                className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px] lg:ml-8  
+              <div className="flex items-start flex-col gap-2 lg:ml-8">
+                <form
+                  onSubmit={onSearchSubmit}
+                  className="flex justify-between items-center py-5 w-2/3 lg:w-full lg:max-w-[370px] h-[30px]   
       ring-2 ring-[#000000] bg-[#000000] rounded-md ps-2"
-              >
-                <input
-                  className="text-white px-3 focus:outline-0 bg-transparent w-full"
-                  placeholder="Search by address, city"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearchKeyPress}
-                />
-                <div className="w-8 lg:max-w-[80px]">
-                  <Button
-                    type="submit"
-                    disabled={isSearching}
-                    className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
+                >
+                  <input
+                    className="text-white px-3 focus:outline-0 bg-transparent w-full"
+                    placeholder="Search by address, city"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearchKeyPress}
+                  />
+                  <div className="w-8 lg:max-w-[80px]">
+                    <Button
+                      type="submit"
+                      disabled={isSearching}
+                      className="w-full !h-[30px]  font-poppins text-base cursor-pointer 
                               hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSearching ? "..." : <FaSearch />}
-                  </Button>
-                </div>
-              </form>
+                    >
+                      {isSearching ? "..." : <FaSearch />}
+                    </Button>
+                  </div>
+                </form>
+                <button
+                  onClick={() => setRightSidebarOpen((s) => !s)}
+                  className="bg-white shadow-md rounded-xl rotate-[720deg] duration-300 py-1 px-2 flex items-center justify-center"
+                  aria-label="Toggle properties sidebar"
+                >
+                  {!rightSidebarOpen ? (
+                    <MdOutlineMenuOpen size={30} />
+                  ) : (
+                    <RxCross2 size={30} />
+                  )}
+                </button>
+              </div>
 
               <div className="hidden lg:block">
                 <Image
@@ -523,7 +677,7 @@ export default function Dashboard() {
                 />
               </div>
 
-              <div className="size-12 relative lg:mr-8">
+              <div className="size-12 relative lg:mr-8 flex flex-col items-center gap-2 pt-2">
                 <button className="cursor-pointer" onClick={handleAccount}>
                   {imageUrl ? (
                     <Image
@@ -540,9 +694,6 @@ export default function Dashboard() {
                   )}
                 </button>
               </div>
-            </div>
-            <div className=" ">
-              <TbMenu />
             </div>
 
             <div className="absolute bottom-6 w-full flex items-center justify-center gap-6">
@@ -576,18 +727,8 @@ export default function Dashboard() {
           </div>
         </main>
 
-        {/* Right collapsible sidebar toggle (keeps position over layout) */}
-        <div className="absolute top-40 right-4 z-40 lg:pr-4">
-          <button
-            onClick={() => setRightSidebarOpen((s) => !s)}
-            className="bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center"
-            aria-label="Toggle properties sidebar"
-          >
-            {rightSidebarOpen ? "←" : "→"}
-          </button>
-        </div>
+        <div className="absolute top-40 right-4 z-40 lg:pr-4"></div>
 
-        {/* Desktop sidebar (part of layout) */}
         <aside
           className={`hidden lg:block transition-all duration-300 overflow-auto bg-white ${
             rightSidebarOpen ? "w-1/4" : "w-0"
@@ -668,7 +809,6 @@ export default function Dashboard() {
           )}
         </aside>
 
-        {/* Mobile overlay sidebar (covers screen) */}
         <div
           className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform ${
             rightSidebarOpen ? "translate-x-0" : "translate-x-full"
@@ -786,7 +926,7 @@ export default function Dashboard() {
       )}
       {/* Not found modal */}
       {showNotFoundModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="fixed inset-0 z-50 flex items-center rounded-md justify-center bg-black/40">
           <div className="bg-white p-6 rounded shadow-lg max-w-sm">
             <h3 className="font-semibold mb-2">No results</h3>
             <p className="text-sm mb-4">{notFoundMessage}</p>
